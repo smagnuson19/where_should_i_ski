@@ -89,14 +89,21 @@ export function SnotelDashboard() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-5 pb-14 space-y-4">
-      <div>
-        <h1 className="text-lg sm:text-xl font-bold tracking-tight text-white">
-          Western US snowpack in El Niño, La Niña and Neutral winters
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-400 mt-1">
-          {core.totalStations} <Term k="snotel">SNOTEL</Term> mountain sites, water years {firstYear}–{lastYear}. Pick a
-          phase and a range of winters; every number below updates.
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-16 space-y-5">
+      <div className="space-y-1.5">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+            Western US Snowpack in El Niño, La Niña &amp; Neutral Winters
+          </h1>
+          <span className="inline-flex items-center rounded-full bg-sky-500/15 border border-sky-500/30 px-2.5 py-0.5 text-xs font-medium text-sky-300 font-mono">
+            {core.totalStations} SNOTEL Sites · WY {firstYear}–{lastYear}
+          </span>
+        </div>
+        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-3xl">
+          Historical snowpack analysis across {core.totalStations} USDA NRCS <Term k="snotel">SNOTEL</Term> mountain
+          stations ({lastYear - firstYear + 1} <Term k="waterYear">water years</Term>). Select an{" "}
+          <Term k="enso">ENSO</Term> phase, year window, or elevation band below — every map, ranking, and chart updates
+          instantly.
         </p>
       </div>
 

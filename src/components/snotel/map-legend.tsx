@@ -8,22 +8,24 @@ import { Term } from "@/components/snotel/glossary";
 
 export function MapLegend({ phase, showSites }: { phase: EnsoPhase; showSites: boolean }) {
   return (
-    <div className="space-y-2 text-[11px] text-slate-300">
-      <div className="text-slate-400">
-        Color = typical <Term k="peakSwe">peak snowpack</Term> in {PHASE_LABEL[phase]} winters, as{" "}
-        <Term k="pctMedian">% of median</Term> (100% = a typical winter).
-        {showSites ? " Dots use the same scale for each site." : ""}
+    <div className="space-y-2.5 pt-1 text-xs text-slate-300">
+      <div className="text-slate-400 leading-relaxed">
+        Shading shows median <Term k="peakSwe">peak snowpack</Term> in{" "}
+        <strong className="font-semibold text-slate-200">{PHASE_LABEL[phase]}</strong> winters as{" "}
+        <Term k="pctMedian">% of median</Term> (<span className="font-mono text-slate-200">100%</span> = typical
+        winter).
+        {showSites ? " Station dots use the same scale." : ""}
       </div>
-      <div className="flex flex-wrap items-stretch gap-1">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
         {PCT_BINS.map((b) => (
-          <div key={b.label} className="flex-1 min-w-[88px]">
-            <div className="h-2.5 rounded-sm" style={{ backgroundColor: b.color }} />
-            <div className="mt-1 font-semibold text-slate-200">{b.label}</div>
-            <div className="text-slate-500 leading-tight">{b.meaning}</div>
+          <div key={b.label} className="rounded-lg bg-slate-950/60 border border-slate-800/80 p-2">
+            <div className="h-2 rounded-full" style={{ backgroundColor: b.color }} />
+            <div className="mt-1.5 font-mono text-[11px] font-semibold text-slate-100">{b.label}</div>
+            <div className="text-[11px] text-slate-400 leading-snug">{b.meaning}</div>
           </div>
         ))}
       </div>
-      <div className="flex flex-wrap gap-4 text-slate-500">
+      <div className="flex flex-wrap gap-4 text-[11px] text-slate-400">
         <span className="inline-flex items-center gap-1.5">
           <span className="w-3 h-3 rounded-sm border border-slate-700" style={{ backgroundColor: NO_DATA_COLOR }} />
           No sites in this elevation band

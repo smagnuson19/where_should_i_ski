@@ -35,16 +35,16 @@ export function EnsoMapPanel(props: EnsoMapPanelProps) {
 
   return (
     <section className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-      <div className="lg:col-span-8 rounded-xl border border-slate-800 bg-slate-900/60 p-3 sm:p-4 space-y-3">
+      <div className="lg:col-span-8 rounded-2xl border border-slate-800/90 bg-slate-900/60 p-4 sm:p-5 space-y-3.5 flex flex-col justify-between">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-sm font-semibold text-white flex items-center gap-1.5">
+          <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
             <MapIcon className="w-4 h-4 text-sky-400" />
-            Snowpack in {PHASE_LABEL[phase]} winters, by region
+            Regional Snowpack Map — {PHASE_LABEL[phase]} Winters
           </h2>
-          <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+          <label className="flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer bg-slate-950/70 border border-slate-800 px-3 py-1.5 rounded-lg hover:border-slate-700 transition">
             <MapPin className="w-3.5 h-3.5 text-sky-400" />
-            Show SNOTEL sites
-            {props.showSites && <span className="text-slate-500">({props.visibleSites.length})</span>}
+            Show SNOTEL stations
+            {props.showSites && <span className="font-mono text-slate-400">({props.visibleSites.length})</span>}
             <Switch checked={props.showSites} onCheckedChange={(v) => props.onShowSitesChange(Boolean(v))} />
           </label>
         </div>

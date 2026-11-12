@@ -54,11 +54,11 @@ export const HINGE_NOTE =
 export function skierTip(phase: EnsoPhase, ranked: RankedRegion[]): string {
   const { best, worst, spread } = bestAndWorst(ranked);
   if (!best) return "Not enough data in this selection.";
-  if (spread < 10) {
-    return "No region stands out: every region stays within a few percent of typical.";
+  if (spread <= 10) {
+    return "No single region stands out: every region stays within a few percent of its typical winter snowpack.";
   }
   const runnerUp = ranked.find((r) => r.pct !== null && r.regionId !== best.regionId && (r.pct ?? 0) >= 100);
   const bestText = runnerUp ? `${best.name} and ${runnerUp.name}` : best.name;
   const phaseWord = phase === "el_nino" ? "an El Niño" : phase === "la_nina" ? "a La Niña" : "a neutral";
-  return `In ${phaseWord} winter, the best odds are in ${bestText}; ${worst?.name ?? "the weakest region"} is the riskiest bet.`;
+  return `In ${phaseWord} winter, historical odds favor ${bestText}, while ${worst?.name ?? "the lowest-ranked region"} is the riskiest bet.`;
 }

@@ -24,55 +24,68 @@ function barGeometry(pct: number) {
 
 export function MapTakeaways({ phase, ranked, selectedRegion, onSelectRegion }: MapTakeawaysProps) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 space-y-4 h-full">
-      <div>
-        <h3 className={`text-sm font-bold ${PHASE_STYLE[phase].text}`}>{PHASE_LABEL[phase]} winters: who wins?</h3>
-        <p className="text-xs text-slate-400 mt-0.5">Regions ranked by typical peak snowpack. Click one to see its charts.</p>
-      </div>
+    <div className="rounded-2xl border border-slate-800/90 bg-slate-900/60 p-4 sm:p-5 space-y-4 h-full flex flex-col justify-between">
+      <div className="space-y-3.5">
+        <div>
+          <h3 className={`text-sm sm:text-base font-bold tracking-tight ${PHASE_STYLE[phase].text}`}>
+            {PHASE_LABEL[phase]} Winters: Regional Ranking
+          </h3>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Ranked by median peak snowpack vs. normal (100%). Select any region to inspect its charts.
+          </p>
+        </div>
 
-      <ul className="space-y-1">
-        {ranked.map((r) => (
-          <li key={r.regionId}>
-            <button
-              type="button"
-              onClick={() => onSelectRegion(r.regionId)}
-              className={`w-full text-left rounded-md px-2 py-1.5 transition border ${
-                selectedRegion === r.regionId ? "border-sky-500/60 bg-sky-500/10" : "border-transparent hover:bg-slate-800/60"
-              }`}
-            >
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-200 font-medium flex items-center gap-1">
-                  {r.name}
-                  {r.pct !== null && r.lowConfidence && (
-                    <AlertTriangle className="w-3 h-3 text-amber-400" aria-label="low confidence" />
+        <ul className="space-y-1.5">
+          {ranked.map((r) => (
+            <li key={r.regionId}>
+              <button
+                type="button"
+                onClick={() => onSelectRegion(r.regionId)}
+                className={`w-full text-left rounded-xl px-3 py-2 transition border ${
+                  selectedRegion === r.regionId
+                    ? "border-sky-500/60 bg-sky-500/15 shadow-xs"
+                    : "border-slate-800/40 bg-slate-950/35 hover:bg-slate-800/60 hover:border-slate-700/80"
+                }`}
+              >
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-100 font-medium flex items-center gap-1.5">
+                    {r.name}
+                    {r.pct !== null && r.lowConfidence && (
+                      <AlertTriangle className="w-3 h-3 text-amber-400" aria-label="low confidence" />
+                    )}
+                  </span>
+                  <span className="font-mono font-bold text-white">{formatPct(r.pct)}</span>
+                </div>
+                <div className="relative h-2 mt-1.5 rounded-full bg-slate-800/90 overflow-hidden">
+                  <div className="absolute inset-y-0 left-1/2 w-px bg-slate-400/70 z-10" />
+                  {r.pct !== null && (
+                    <div
+                      className="absolute inset-y-0 rounded-full"
+                      style={{ ...barGeometry(r.pct), backgroundColor: pctColor(r.pct) }}
+                    />
                   )}
-                </span>
-                <span className="font-mono font-semibold text-white">{formatPct(r.pct)}</span>
-              </div>
-              <div className="relative h-1.5 mt-1 rounded bg-slate-800">
-                <div className="absolute inset-y-0 left-1/2 w-px bg-slate-500" />
-                {r.pct !== null && (
-                  <div className="absolute inset-y-0 rounded" style={{ ...barGeometry(r.pct), backgroundColor: pctColor(r.pct) }} />
-                )}
-              </div>
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      <div className="rounded-lg bg-slate-950/60 border border-slate-800 p-3 space-y-1">
-        <div className="text-xs font-semibold text-white flex items-center gap-1.5">
-          <Lightbulb className="w-3.5 h-3.5 text-amber-300" /> Takeaway
-        </div>
-        <p className="text-xs text-slate-300 leading-relaxed">{skierTip(phase, ranked)}</p>
+                </div>
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <div className="space-y-1.5">
-        <div className="text-xs font-semibold text-white flex items-center gap-1.5">
-          <Wind className="w-3.5 h-3.5 text-sky-400" /> Why
+      <div className="space-y-3 pt-1">
+        <div className="rounded-xl bg-slate-950/70 border border-slate-800/90 p-3.5 space-y-1">
+          <div className="text-xs font-semibold text-white flex items-center gap-1.5">
+            <Lightbulb className="w-3.5 h-3.5 text-amber-300" /> Bottom Line
+          </div>
+          <p className="text-xs text-slate-300 leading-relaxed">{skierTip(phase, ranked)}</p>
         </div>
-        <p className="text-xs text-slate-400 leading-relaxed">{PHASE_WHY[phase]}</p>
-        {phase !== "neutral" && <p className="text-xs text-slate-500 leading-relaxed">{HINGE_NOTE}</p>}
+
+        <div className="rounded-xl bg-slate-950/40 border border-slate-800/60 p-3.5 space-y-1.5">
+          <div className="text-xs font-semibold text-white flex items-center gap-1.5">
+            <Wind className="w-3.5 h-3.5 text-sky-400" /> Why the Jet Stream Shifts
+          </div>
+          <p className="text-xs text-slate-300/90 leading-relaxed">{PHASE_WHY[phase]}</p>
+          {phase !== "neutral" && <p className="text-[11px] text-slate-400 leading-relaxed">{HINGE_NOTE}</p>}
+        </div>
       </div>
     </div>
   );

@@ -25,7 +25,14 @@ type StatesTopology = Topology<{
 }>;
 
 const topology = statesTopology as unknown as StatesTopology;
-const projection = geoAlbersUsa().scale(1300).translate([MAP_WIDTH / 2, MAP_HEIGHT / 2]);
+const nationFeature = feature(topology, topology.objects.nation);
+const projection = geoAlbersUsa().fitExtent(
+  [
+    [28, 18],
+    [MAP_WIDTH - 28, MAP_HEIGHT - 18],
+  ],
+  nationFeature
+);
 const pathGen = geoPath(projection);
 
 export interface StateShape {
@@ -46,7 +53,7 @@ export const STATE_SHAPES: StateShape[] = feature(topology, topology.objects.sta
 
 export const STATE_BORDERS_PATH =
   pathGen(mesh(topology, topology.objects.states, (a, b) => a !== b)) ?? "";
-export const NATION_OUTLINE_PATH = pathGen(feature(topology, topology.objects.nation)) ?? "";
+export const NATION_OUTLINE_PATH = pathGen(nationFeature) ?? "";
 
 export function projectLonLat(lon: number, lat: number): [number, number] | null {
   return projection([lon, lat]);
