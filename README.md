@@ -1,13 +1,22 @@
-# SNOTEL × ENSO Historical Snowpack, Temperature & Storm Explorer (1930–2026)
+# Where Should I Ski? Snowpack & ENSO in the US (SNOTEL) and Japan (JMA)
 
-Interactive climate explorer analyzing **954 snow-monitoring USDA NRCS SNOTEL (`SNTL` / `SNTLT`) stations** across Western North America and Alaska against **NOAA CPC Oceanic Niño Index (`ONI`)** El Niño, La Niña, and Historical Median regimes from **Water Year 1930 through 2026**.
+Two dashboards behind top-level tabs:
 
-## Key Features
+- **United States (SNOTEL)**: **954 snow-monitoring USDA NRCS SNOTEL (`SNTL` / `SNTLT`) stations** across Western North America and Alaska against **NOAA CPC Oceanic Niño Index (`ONI`)** El Niño, La Niña and Neutral winters, **Water Year 1930 through 2026**.
+- **Japan (JMA)**: regional snowfall, winter temperature, monthly profile and storm-intensity analysis for 8 JMA climate divisions and 40 WMO stations across El Niño, La Niña and Neutral winters (1953/54–2024/25), from `src/data/jma-enso-snowfall-data.json`.
 
-- **All-Station SNOTEL Network Ingestion (`scripts/ingest_snotel_enso.py`)**: Pulls period-of-record monthly snow water equivalent (`WTEQ`), snow depth (`SNWD`), and temperature (`TAVG`, `TMAX`, `TMIN`) series going as far back as possible (`1930–2026`), plus daily storm event telemetry across 28 regional/elevation benchmark sites.
-- **Regional & Elevation-Band Comparisons**: Compare seasonal `Oct–Sep` SWE accumulation curves, `Nov–Mar` winter temperatures against the `32°F` freezing line, and 97-year water-year snowpack anomalies across 7 hydro-climatic regions (`PNW`, `SIERRA`, `GREAT_BASIN`, `NORTHERN_ROCKIES`, `CENTRAL_ROCKIES`, `SOUTHWEST`, `ALASKA`) and 5 elevation bands (`<4,500 ft` to `>10,000 ft`).
-- **Elevation & Orographic Lapse-Rate Adjuster**: Dynamically adjust simulated station/regional elevation (`±3,000 ft` or `3,000–12,500 ft`), temperature lapse rate (`°F / 1,000 ft`), and orographic SWE gradient (`% / 1,000 ft`).
-- **Interactive Station Historical Popup Modal**: Click any SNOTEL site on the map or station list to open its full historical popup modal with seasonal ENSO curves, complete period-of-record bar/line charts, and live daily snowfall impulse telemetry via `/api/snotel-daily`.
+## US view
+
+- **Plain-language summary first**: which regions do best and worst in each ENSO phase, updated with every filter, with low-confidence flags when a phase has fewer than 5 winters in the selected years.
+- **US map front and center**: states are shaded with their SNOTEL region's typical peak snowpack (% of median) for the selected phase; click a region to focus the regional charts. Built from the bundled `us-atlas` TopoJSON with `d3-geo` (Albers USA projection, Alaska inset); no tile servers or API keys.
+- **Year-range filter**: dual slider plus presets (All years, Since 1981, Since 1991, Last 20 winters). Map colors, regional medians, % of median, temperatures, storm days, elevation bands and takeaways are recomputed client-side from per-year data.
+- **Show SNOTEL sites** (off by default): plots every site on the map and lists them; click a site to open its historical popup with live daily snowfall telemetry via `/api/snotel-daily`.
+- **Progressive disclosure**: secondary charts, the elevation-band comparison, the glossary (SWE, ONI, % of median, elevation band, ...) and method notes are collapsed by default.
+
+## Data
+
+- `scripts/ingest_snotel_enso.py`: full ingest of station metadata, per-station water-year histories, ENSO classification and 28 benchmark daily storm records into `public/data/`.
+- `scripts/build_monthly_by_year.py`: per-water-year monthly regional site averages (SWE, snow depth, temperature) by region and elevation band, written to `public/data/snotel-monthly-by-year.json`, so the seasonal curves can be rebuilt for any year range. Run `python3 scripts/build_monthly_by_year.py` (needs network access to the USDA AWDB API, about 2 minutes).
 
 ## Running Locally
 

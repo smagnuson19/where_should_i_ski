@@ -110,23 +110,29 @@ export function StationHistoryModal({
   const [lapseRateTemp, setLapseRateTemp] = useState<number>(3.5); // °F per 1000 ft
   const [orographicSwePct, setOrographicSwePct] = useState<number>(8); // % SWE per 1000 ft
   const [selectedDailyWy, setSelectedDailyWy] = useState<string>("2023");
-  const [dailyTrace, setDailyTrace] = useState<DailyTraceResponse | null>(null);
-  const [dailyLoading, setDailyLoading] = useState<boolean>(false);
-  const [dailyError, setDailyError] = useState<string | null>(null);
+  const [dailyResult, setDailyResult] = useState<{
+    key: string;
+    trace: DailyTraceResponse | null;
+    error: string | null;
+  } | null>(null);
+  const [initializedFor, setInitializedFor] = useState<SnotelStation | null>(null);
 
-  useEffect(() => {
-    if (station) {
-      setTargetElev(station.elevation);
-      const defaultWy = station.latestYear >= 2023 ? "2023" : String(station.latestYear);
-      setSelectedDailyWy(defaultWy);
-    }
-  }, [station]);
+  if (station && station !== initializedFor) {
+    setInitializedFor(station);
+    setTargetElev(station.elevation);
+    setSelectedDailyWy(station.latestYear >= 2023 ? "2023" : String(station.latestYear));
+  }
+
+  const dailyKey =
+    open && station && selectedDailyWy ? `${station.triplet}|${selectedDailyWy}` : null;
+  const dailyLoading = dailyKey !== null && dailyResult?.key !== dailyKey;
+  const dailyTrace = dailyResult?.key === dailyKey ? dailyResult.trace : null;
+  const dailyError = dailyResult?.key === dailyKey ? dailyResult.error : null;
 
   useEffect(() => {
     if (!open || !station || !selectedDailyWy) return;
+    const key = `${station.triplet}|${selectedDailyWy}`;
     let cancelled = false;
-    setDailyLoading(true);
-    setDailyError(null);
 
     fetch(
       `/api/snotel-daily?triplet=${encodeURIComponent(
@@ -136,18 +142,14 @@ export function StationHistoryModal({
       .then((r) => r.json())
       .then((data) => {
         if (cancelled) return;
-        if (data.error) {
-          setDailyError(data.error);
-          setDailyTrace(null);
-        } else {
-          setDailyTrace(data);
-        }
+        setDailyResult(
+          data.error ? { key, trace: null, error: data.error } : { key, trace: data, error: null }
+        );
       })
       .catch((e) => {
-        if (!cancelled) setDailyError(e.message || "Failed to load daily trace");
-      })
-      .finally(() => {
-        if (!cancelled) setDailyLoading(false);
+        if (!cancelled) {
+          setDailyResult({ key, trace: null, error: e.message || "Failed to load daily trace" });
+        }
       });
 
     return () => {
