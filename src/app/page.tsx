@@ -52,7 +52,7 @@ export default function EnsoSnowfallDashboard() {
                     : "bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200"
                 }`}
               >
-                {r.name_en.split(" (")[0]}
+                {r.name_en.replace(" (Eastern Japan Sea of Japan Side)", "").replace(" / Western Japan (Sea of Japan Side)", "").replace("Kanto-Koshin / Nagano / ", "")}
               </button>
             ))}
           </div>
