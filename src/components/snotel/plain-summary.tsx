@@ -5,7 +5,7 @@ import { AlertTriangle, Sparkles } from "lucide-react";
 import { EnsoPhase, RegionInfo } from "@/types/snotel";
 import { ENSO_PHASES, PhaseRecord, RegionRangeSummary, YearRange } from "@/types/snotel-range";
 import { Term } from "@/components/snotel/glossary";
-import { bestAndWorst, rankRegions } from "@/lib/snotel/story";
+import { bestAndWorst, rankRegions, RankedRegion } from "@/lib/snotel/story";
 import { formatPct } from "@/lib/snotel/enso-scale";
 import { LOW_CONFIDENCE_WINTERS, PHASE_LABEL, PHASE_STYLE, winterSpan } from "@/lib/snotel/year-range";
 
@@ -23,12 +23,7 @@ const BORDER: Record<EnsoPhase, string> = {
   neutral: "border-l-slate-500",
 };
 
-function PhaseSentence({
-  phase,
-  summaries,
-  regions,
-}: Omit<PlainSummaryProps, "phaseCounts" | "range" | "bandLabel"> & { phase: EnsoPhase }) {
-  const ranked = rankRegions(summaries, regions, phase);
+function PhaseSentence({ ranked }: { ranked: RankedRegion[] }) {
   const { best, worst, spread } = bestAndWorst(ranked);
   if (!best || !worst) {
     return <p className="text-xs text-slate-400">Not enough data for this selection.</p>;
@@ -60,9 +55,58 @@ function PhaseSentence({
   );
 }
 
+/** One card per ENSO phase naming the best and worst region. */
+export function PhaseCards({
+  rankedByPhase,
+  phaseCounts,
+}: {
+  rankedByPhase: PhaseRecord<RankedRegion[]>;
+  phaseCounts: PhaseRecord<number>;
+}) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      {ENSO_PHASES.map((p) => (
+        <div
+          key={p}
+          className={`rounded-xl border border-slate-800/90 border-l-4 ${BORDER[p]} bg-slate-950/60 p-3.5 space-y-2`}
+        >
+          <div className="flex items-center justify-between gap-2">
+            <span className={`text-xs font-bold tracking-tight ${PHASE_STYLE[p].text}`}>{PHASE_LABEL[p]} Winters</span>
+            <span className="inline-flex items-center gap-1 text-[11px] font-mono text-slate-400">
+              n={phaseCounts[p]}
+              {phaseCounts[p] < LOW_CONFIDENCE_WINTERS && (
+                <span className="inline-flex items-center gap-0.5 text-[10px] font-sans text-amber-300">
+                  <AlertTriangle className="w-3 h-3" /> low n
+                </span>
+              )}
+            </span>
+          </div>
+          <PhaseSentence ranked={rankedByPhase[p]} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function ThinPhasesNote({ phaseCounts }: { phaseCounts: PhaseRecord<number> }) {
+  const thinPhases = ENSO_PHASES.filter((p) => phaseCounts[p] < LOW_CONFIDENCE_WINTERS);
+  if (!thinPhases.length) return null;
+  return (
+    <p className="text-xs text-amber-300 flex items-start gap-1.5">
+      <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+      <span>
+        Only {thinPhases.map((p) => `${phaseCounts[p]} ${PHASE_LABEL[p]}`).join(" and ")} winters fall in these years.
+        Treat those results as <Term k="lowConfidence">low confidence</Term>, or widen the year range.
+      </span>
+    </p>
+  );
+}
+
 export function PlainSummary({ summaries, regions, phaseCounts, range, bandLabel }: PlainSummaryProps) {
   const west = summaries.ALL?.phases;
-  const thinPhases = ENSO_PHASES.filter((p) => phaseCounts[p] < LOW_CONFIDENCE_WINTERS);
+  const rankedByPhase = Object.fromEntries(
+    ENSO_PHASES.map((p) => [p, rankRegions(summaries, regions, p)])
+  ) as PhaseRecord<RankedRegion[]>;
 
   return (
     <section className="rounded-2xl border border-sky-500/25 bg-gradient-to-br from-sky-950/35 via-slate-900/80 to-slate-900/60 p-4 sm:p-5 space-y-3.5 shadow-sm">
@@ -89,39 +133,8 @@ export function PlainSummary({ summaries, regions, phaseCounts, range, bandLabel
         </p>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {ENSO_PHASES.map((p) => (
-          <div
-            key={p}
-            className={`rounded-xl border border-slate-800/90 border-l-4 ${BORDER[p]} bg-slate-950/60 p-3.5 space-y-2`}
-          >
-            <div className="flex items-center justify-between gap-2">
-              <span className={`text-xs font-bold tracking-tight ${PHASE_STYLE[p].text}`}>
-                {PHASE_LABEL[p]} Winters
-              </span>
-              <span className="inline-flex items-center gap-1 text-[11px] font-mono text-slate-400">
-                n={phaseCounts[p]}
-                {phaseCounts[p] < LOW_CONFIDENCE_WINTERS && (
-                  <span className="inline-flex items-center gap-0.5 text-[10px] font-sans text-amber-300">
-                    <AlertTriangle className="w-3 h-3" /> low n
-                  </span>
-                )}
-              </span>
-            </div>
-            <PhaseSentence phase={p} summaries={summaries} regions={regions} />
-          </div>
-        ))}
-      </div>
-
-      {thinPhases.length > 0 && (
-        <p className="text-xs text-amber-300 flex items-start gap-1.5">
-          <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-          <span>
-            Only {thinPhases.map((p) => `${phaseCounts[p]} ${PHASE_LABEL[p]}`).join(" and ")} winters fall in these years.
-            Treat those results as <Term k="lowConfidence">low confidence</Term>, or widen the year range.
-          </span>
-        </p>
-      )}
+      <PhaseCards rankedByPhase={rankedByPhase} phaseCounts={phaseCounts} />
+      <ThinPhasesNote phaseCounts={phaseCounts} />
     </section>
   );
 }

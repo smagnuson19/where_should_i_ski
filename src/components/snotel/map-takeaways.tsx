@@ -3,7 +3,7 @@
 import React from "react";
 import { AlertTriangle, Lightbulb, Wind } from "lucide-react";
 import { EnsoPhase } from "@/types/snotel";
-import { RankedRegion, HINGE_NOTE, PHASE_WHY, skierTip } from "@/lib/snotel/story";
+import { RankedRegion, skierTip } from "@/lib/snotel/story";
 import { formatPct, pctColor } from "@/lib/snotel/enso-scale";
 import { PHASE_LABEL, PHASE_STYLE } from "@/lib/snotel/year-range";
 
@@ -12,6 +12,10 @@ interface MapTakeawaysProps {
   ranked: RankedRegion[];
   selectedRegion: string;
   onSelectRegion: (regionId: string) => void;
+  subtitle: string;
+  whyTitle: string;
+  why: string;
+  note?: string;
 }
 
 /** Bars are drawn on a 50%–150% axis with 100% (a typical winter) in the middle. */
@@ -22,7 +26,16 @@ function barGeometry(pct: number) {
   return { left: `${left}%`, width: `${width}%` };
 }
 
-export function MapTakeaways({ phase, ranked, selectedRegion, onSelectRegion }: MapTakeawaysProps) {
+export function MapTakeaways({
+  phase,
+  ranked,
+  selectedRegion,
+  onSelectRegion,
+  subtitle,
+  whyTitle,
+  why,
+  note,
+}: MapTakeawaysProps) {
   return (
     <div className="rounded-2xl border border-slate-800/90 bg-slate-900/60 p-4 sm:p-5 space-y-4 h-full flex flex-col justify-between">
       <div className="space-y-3.5">
@@ -30,9 +43,7 @@ export function MapTakeaways({ phase, ranked, selectedRegion, onSelectRegion }: 
           <h3 className={`text-sm sm:text-base font-bold tracking-tight ${PHASE_STYLE[phase].text}`}>
             {PHASE_LABEL[phase]} Winters: Regional Ranking
           </h3>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Ranked by median peak snowpack vs. normal (100%). Select any region to inspect its charts.
-          </p>
+          <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>
         </div>
 
         <ul className="space-y-1.5">
@@ -81,10 +92,10 @@ export function MapTakeaways({ phase, ranked, selectedRegion, onSelectRegion }: 
 
         <div className="rounded-xl bg-slate-950/40 border border-slate-800/60 p-3.5 space-y-1.5">
           <div className="text-xs font-semibold text-white flex items-center gap-1.5">
-            <Wind className="w-3.5 h-3.5 text-sky-400" /> Why the Jet Stream Shifts
+            <Wind className="w-3.5 h-3.5 text-sky-400" /> {whyTitle}
           </div>
-          <p className="text-xs text-slate-300/90 leading-relaxed">{PHASE_WHY[phase]}</p>
-          {phase !== "neutral" && <p className="text-[11px] text-slate-400 leading-relaxed">{HINGE_NOTE}</p>}
+          <p className="text-xs text-slate-300/90 leading-relaxed">{why}</p>
+          {note && <p className="text-[11px] text-slate-400 leading-relaxed">{note}</p>}
         </div>
       </div>
     </div>

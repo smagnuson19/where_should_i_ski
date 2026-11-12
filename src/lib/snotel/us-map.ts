@@ -40,6 +40,7 @@ export interface StateShape {
   name: string;
   postal: string | null;
   d: string;
+  bounds: [[number, number], [number, number]];
 }
 
 export const STATE_SHAPES: StateShape[] = feature(topology, topology.objects.states).features.map(
@@ -48,6 +49,7 @@ export const STATE_SHAPES: StateShape[] = feature(topology, topology.objects.sta
     name: f.properties?.name ?? "",
     postal: FIPS_TO_POSTAL[String(f.id)] ?? null,
     d: pathGen(f) ?? "",
+    bounds: pathGen.bounds(f) as [[number, number], [number, number]],
   })
 );
 
@@ -57,6 +59,64 @@ export const NATION_OUTLINE_PATH = pathGen(nationFeature) ?? "";
 
 export function projectLonLat(lon: number, lat: number): [number, number] | null {
   return projection([lon, lat]);
+}
+
+export interface MapViewBox {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+export const FULL_MAP_VIEW: MapViewBox = { x: 0, y: 0, w: MAP_WIDTH, h: MAP_HEIGHT };
+
+const MAX_ZOOM = 18;
+
+export function clampMapView(view: MapViewBox): MapViewBox {
+  const minW = MAP_WIDTH / MAX_ZOOM;
+  const w = Math.min(MAP_WIDTH, Math.max(minW, view.w));
+  const h = w * (MAP_HEIGHT / MAP_WIDTH);
+  if (w >= MAP_WIDTH - 0.5) return FULL_MAP_VIEW;
+  const marginX = Math.min(w * 0.35, MAP_WIDTH * 0.5);
+  const marginY = Math.min(h * 0.35, MAP_HEIGHT * 0.5);
+  return {
+    x: Math.min(MAP_WIDTH - marginX, Math.max(marginX - w, view.x)),
+    y: Math.min(MAP_HEIGHT - marginY, Math.max(marginY - h, view.y)),
+    w,
+    h,
+  };
+}
+
+/** `factor` > 1 zooms out. The anchor stays fixed in map coordinates. */
+export function zoomMapView(view: MapViewBox, factor: number, anchorX: number, anchorY: number): MapViewBox {
+  const relX = view.w === 0 ? 0.5 : (anchorX - view.x) / view.w;
+  const relY = view.h === 0 ? 0.5 : (anchorY - view.y) / view.h;
+  const sized = clampMapView({
+    x: view.x,
+    y: view.y,
+    w: view.w * factor,
+    h: view.h * factor,
+  });
+  return clampMapView({
+    x: anchorX - relX * sized.w,
+    y: anchorY - relY * sized.h,
+    w: sized.w,
+    h: sized.h,
+  });
+}
+
+export function fitMapView(bounds: [[number, number], [number, number]]): MapViewBox {
+  const [[x0, y0], [x1, y1]] = bounds;
+  if (![x0, y0, x1, y1].every((n) => Number.isFinite(n))) return FULL_MAP_VIEW;
+  const bw = Math.max(x1 - x0, 12);
+  const bh = Math.max(y1 - y0, 12);
+  const pad = 0.22;
+  const aspect = MAP_WIDTH / MAP_HEIGHT;
+  let w = bw * (1 + pad * 2);
+  let h = bh * (1 + pad * 2);
+  if (w / h > aspect) h = w / aspect;
+  else w = h * aspect;
+  return clampMapView({ x: (x0 + x1) / 2 - w / 2, y: (y0 + y1) / 2 - h / 2, w, h });
 }
 
 export interface StateSiteBreakdown {

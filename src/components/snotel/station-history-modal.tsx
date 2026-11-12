@@ -235,7 +235,7 @@ export function StationHistoryModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-slate-950 border-slate-800 text-slate-100">
+      <DialogContent className="w-[calc(100%-2rem)] sm:max-w-5xl max-h-[90vh] overflow-y-auto bg-slate-950 border-slate-800 text-slate-100">
         <DialogHeader>
           <div className="flex flex-wrap items-center justify-between gap-2 pr-6">
             <div>
@@ -288,11 +288,11 @@ export function StationHistoryModal({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-            <div>
-              <div className="flex justify-between text-[11px] text-slate-300 mb-1.5">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+            <div className="min-w-0">
+              <div className="flex justify-between gap-2 text-[11px] text-slate-300 mb-1.5">
                 <span>Target Elevation (3,000 – 12,500 ft)</span>
-                <span className="font-mono text-sky-300">{targetElev.toLocaleString()} ft</span>
+                <span className="shrink-0 whitespace-nowrap font-mono text-sky-300">{targetElev.toLocaleString()} ft</span>
               </div>
               <Slider
                 value={[targetElev]}
@@ -303,10 +303,10 @@ export function StationHistoryModal({
               />
             </div>
 
-            <div>
-              <div className="flex justify-between text-[11px] text-slate-300 mb-1.5">
+            <div className="min-w-0">
+              <div className="flex justify-between gap-2 text-[11px] text-slate-300 mb-1.5">
                 <span>Temp Lapse Rate (°F / 1,000 ft)</span>
-                <span className="font-mono text-amber-300">
+                <span className="shrink-0 whitespace-nowrap font-mono text-amber-300">
                   -{lapseRateTemp.toFixed(1)}°F/kft ({tempAdjustmentF >= 0 ? "+" : ""}
                   {tempAdjustmentF.toFixed(1)}°F)
                 </span>
@@ -320,10 +320,10 @@ export function StationHistoryModal({
               />
             </div>
 
-            <div>
-              <div className="flex justify-between text-[11px] text-slate-300 mb-1.5">
+            <div className="min-w-0">
+              <div className="flex justify-between gap-2 text-[11px] text-slate-300 mb-1.5">
                 <span>Orographic SWE Gradient (% / 1,000 ft)</span>
-                <span className="font-mono text-emerald-300">
+                <span className="shrink-0 whitespace-nowrap font-mono text-emerald-300">
                   +{orographicSwePct}%/kft (×{sweMultiplier.toFixed(2)})
                 </span>
               </div>

@@ -8,10 +8,11 @@ import { StateSiteBreakdown } from "@/lib/snotel/us-map";
 import { formatPct, pctMeaning } from "@/lib/snotel/enso-scale";
 import { LOW_CONFIDENCE_WINTERS, PHASE_LABEL, PHASE_STYLE } from "@/lib/snotel/year-range";
 
-const CARD =
-  "absolute top-3 right-3 w-72 rounded-lg border border-slate-700/90 bg-slate-900/95 p-3 shadow-xl backdrop-blur-md text-xs text-slate-200 pointer-events-none";
+export const HOVER_CARD_BASE =
+  "w-72 rounded-lg border border-slate-700/90 bg-slate-900/95 p-3 shadow-xl backdrop-blur-md text-xs text-slate-200 pointer-events-none";
+const CARD = `absolute top-3 right-3 ${HOVER_CARD_BASE}`;
 
-function PhaseRow({ values }: { values: Record<EnsoPhase, { pct: number | null; winters: number }> }) {
+export function PhaseRow({ values }: { values: Record<EnsoPhase, { pct: number | null; winters: number }> }) {
   return (
     <div className="grid grid-cols-3 gap-1.5 mt-2 text-center">
       {ENSO_PHASES.map((p) => (
@@ -65,7 +66,7 @@ export function RegionHoverCard({
         />
       )}
       <div className="mt-2 text-[11px] text-sky-400 flex items-center gap-1">
-        <MousePointerClick className="w-3 h-3" /> Click to open this region&apos;s charts
+        <MousePointerClick className="w-3 h-3" /> Click to zoom in and compare sites across {stateName}
       </div>
     </div>
   );

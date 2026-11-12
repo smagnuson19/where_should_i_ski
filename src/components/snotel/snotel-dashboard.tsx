@@ -137,6 +137,7 @@ export function SnotelDashboard() {
         phase={phase}
         selectedRegion={selectedRegion}
         onSelectRegion={focusRegion}
+        onHighlightRegion={setSelectedRegion}
         showSites={showSites}
         onShowSitesChange={setShowSites}
         activeStation={modalOpen ? activeStation : null}

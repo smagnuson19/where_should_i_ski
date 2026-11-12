@@ -1,174 +1,179 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import { Database, Sparkles } from "lucide-react";
 import rawData from "@/data/jma-enso-snowfall-data.json";
 import { JmaEnsoDataset } from "@/types/japan-enso";
-import { RegionalComparisonView } from "@/components/japan/regional-comparison-view";
-import { TempMonthlyIntensityView } from "@/components/japan/temp-monthly-intensity-view";
-import { StationAndHistoryView } from "@/components/japan/station-and-history-view";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Snowflake, Thermometer, CloudSnow, Compass, MapPin, BarChart3 } from "lucide-react";
+import { EnsoPhase } from "@/types/snotel";
+import { ENSO_PHASES, PhaseRecord, YearRange } from "@/types/snotel-range";
+import { JapanMapPanel } from "@/components/japan/japan-map-panel";
+import { JapanRegionDetails, JAPAN_REGION_DETAILS_ID } from "@/components/japan/japan-region-details";
+import { PhaseToggle } from "@/components/snotel/phase-toggle";
+import { YearRangeFilter } from "@/components/snotel/year-range-filter";
+import { PhaseCards, ThinPhasesNote } from "@/components/snotel/plain-summary";
+import { GlossaryPanel, GlossaryTerm } from "@/components/snotel/glossary";
+import { Disclosure } from "@/components/snotel/disclosure";
+import { analyzeJapan, rankJapanRegions } from "@/lib/japan/analysis";
+import { JAPAN_GLOSSARY } from "@/lib/japan/glossary";
+import { RankedRegion } from "@/lib/snotel/story";
+import { formatPct } from "@/lib/snotel/enso-scale";
+import { winterSpan } from "@/lib/snotel/year-range";
 
 const dataset = rawData as unknown as JmaEnsoDataset;
+const FIRST_YEAR = dataset.historical_winters[0].winter_end_year;
+const LAST_YEAR = dataset.historical_winters[dataset.historical_winters.length - 1].winter_end_year;
+const NAME_JA = Object.fromEntries(dataset.regions.map((r) => [r.region_id, r.name_ja]));
 
 export function JapanDashboard() {
-  const [selectedRegionId, setSelectedRegionId] = useState<string>("hokkaido_soj");
-  const selectedRegion =
-    dataset.regions.find((r) => r.region_id === selectedRegionId) ?? dataset.regions[0];
+  const [phase, setPhase] = useState<EnsoPhase>("el_nino");
+  const [customRange, setCustomRange] = useState<YearRange | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState("hokkaido_soj");
+  const [showStations, setShowStations] = useState(true);
+
+  const range = useMemo(() => customRange ?? { start: FIRST_YEAR, end: LAST_YEAR }, [customRange]);
+  const analysis = useMemo(() => analyzeJapan(dataset, range), [range]);
+  const rankedByPhase = useMemo(
+    () =>
+      Object.fromEntries(ENSO_PHASES.map((p) => [p, rankJapanRegions(analysis.summaries, p)])) as PhaseRecord<
+        RankedRegion[]
+      >,
+    [analysis]
+  );
+
+  const focusRegion = (regionId: string) => {
+    setSelectedRegion(regionId);
+    requestAnimationFrame(() =>
+      document.getElementById(JAPAN_REGION_DETAILS_ID)?.scrollIntoView({ behavior: "smooth", block: "start" })
+    );
+  };
+
+  const national = analysis.nationalPct;
+  const nationalValues = ENSO_PHASES.map((p) => national[p]).filter((v): v is number => v !== null);
+  const nationalFlat = nationalValues.length > 0 && Math.max(...nationalValues) - Math.min(...nationalValues) <= 6;
 
   return (
-    <div className="bg-slate-950 text-slate-100">
-      <header className="border-b border-slate-800/80 bg-slate-900/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="h-11 w-11 rounded-xl bg-sky-500/15 border border-sky-500/35 flex items-center justify-center text-sky-400 shrink-0">
-              <Snowflake className="h-5 w-5" />
-            </div>
-            <div className="space-y-1">
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
-                  Japan Regional Snowfall &amp; ENSO Climate Atlas
-                </h1>
-                <Badge className="bg-sky-500/15 text-sky-300 border-sky-500/35 font-mono text-xs">
-                  JMA 1953/54–2024/25 · 72 Winters
-                </Badge>
-              </div>
-              <p className="text-xs sm:text-sm text-slate-400">
-                19 El Niño · 19 La Niña · 34 Neutral winters across 8 JMA climate divisions &amp; 40 WMO synoptic
-                stations (1991–2020 normals)
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-1.5">
-            {dataset.regions.map((r) => (
-              <button
-                key={r.region_id}
-                onClick={() => setSelectedRegionId(r.region_id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
-                  r.region_id === selectedRegionId
-                    ? "bg-sky-500/20 text-sky-200 border-sky-500/50 shadow-xs"
-                    : "bg-slate-900/80 text-slate-300 border-slate-800 hover:bg-slate-800 hover:text-white"
-                }`}
-              >
-                {r.name_en.replace(" (Eastern Japan Sea of Japan Side)", "").replace(" / Western Japan (Sea of Japan Side)", "").replace("Kanto-Koshin / Nagano / ", "")}
-              </button>
-            ))}
-          </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-16 space-y-5">
+      <div className="space-y-1.5">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+            Japan Snowfall in El Niño, La Niña &amp; Neutral Winters
+          </h1>
+          <span className="inline-flex items-center rounded-full bg-sky-500/15 border border-sky-500/30 px-2.5 py-0.5 text-xs font-medium text-sky-300 font-mono">
+            {dataset.stations.length} JMA Stations · Winters {FIRST_YEAR}–{LAST_YEAR}
+          </span>
         </div>
-      </header>
+        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-3xl">
+          Season snowfall at {dataset.stations.length} <GlossaryTerm entry={JAPAN_GLOSSARY.jma}>JMA</GlossaryTerm>{" "}
+          weather stations, grouped into eight climate regions, over {LAST_YEAR - FIRST_YEAR + 1} winters. Pick an{" "}
+          <GlossaryTerm entry={JAPAN_GLOSSARY.enso}>ENSO</GlossaryTerm> phase or year window below — the map, ranking
+          and charts all update.
+        </p>
+      </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-slate-900/60 border-slate-800">
-            <CardContent className="p-4 space-y-1.5">
-              <div className="flex items-center justify-between text-xs text-slate-400">
-                <span>La Niña Strongholds (EAWM / JPCZ)</span>
-                <Compass className="h-4 w-4 text-cyan-400" />
-              </div>
-              <p className="text-base font-bold text-cyan-300">
-                San&apos;in (+34.0%), Hokuriku (+4.6%), Tohoku SoJ (+2.3%)
-              </p>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Cold Siberian NW monsoon surges favor Western & Central Sea of Japan coasts. Modern era (1991–2025) LN edge: San&apos;in +82.6%, Hokuriku +46.7%, Tohoku SoJ +24.3%.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-900/60 border-slate-800">
-            <CardContent className="p-4 space-y-1.5">
-              <div className="flex items-center justify-between text-xs text-slate-400">
-                <span>El Niño Outperformers (Nan&apos;gan Lows)</span>
-                <CloudSnow className="h-4 w-4 text-amber-400" />
-              </div>
-              <p className="text-base font-bold text-amber-300">
-                Okhotsk (+14.4%), Central Highlands (+13.7%), Hokkaido (+4.5%)
-              </p>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Southern-coast extratropical cyclones pump Pacific moisture into Nagano/Kanto mountains (Matsumoto +39.2%, Kawaguchiko +20.0%, Miyako +25.4%, Sendai +23.2%).
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-900/60 border-slate-800">
-            <CardContent className="p-4 space-y-1.5">
-              <div className="flex items-center justify-between text-xs text-slate-400">
-                <span>Frequency vs. Storm Intensity Paradox</span>
-                <BarChart3 className="h-4 w-4 text-emerald-400" />
-              </div>
-              <p className="text-base font-bold text-emerald-300">
-                Fewer Snow Days, Larger Single Storms in El Niño
-              </p>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Tohoku Pac has fewer ≥3cm days in EN (12.3 vs 13.5d) but +19.5% more ≥20cm days and +19.4% bigger max 1-day storms (24.6 vs 20.6 cm; Shinjo 48 vs 41 cm).
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-900/60 border-slate-800">
-            <CardContent className="p-4 space-y-1.5">
-              <div className="flex items-center justify-between text-xs text-slate-400">
-                <span>Winter Thermal Dipole (DJF & Detrended)</span>
-                <Thermometer className="h-4 w-4 text-rose-400" />
-              </div>
-              <p className="text-base font-bold text-rose-300">
-                Honshu +0.36° to +0.61°C Warmer in El Niño
-              </p>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Detrended DJF anomalies are +0.20° to +0.68°C in EN across Honshu (shifting coastal San&apos;in/Hokuriku snow to rain), while Hokkaido is −0.01° to −0.38°C cooler.
-              </p>
-            </CardContent>
-          </Card>
+      <section className="rounded-2xl border border-sky-500/25 bg-gradient-to-br from-sky-950/35 via-slate-900/80 to-slate-900/60 p-4 sm:p-5 space-y-3.5 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-sky-400" />
+            At a Glance: How ENSO Splits Japan
+          </h2>
+          <span className="text-xs font-mono text-slate-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-0.5 rounded-full">
+            {analysis.phaseCounts.total} winters · {winterSpan(range)}
+          </span>
         </div>
+        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-4xl">
+          Across all eight regions, median season snowfall is{" "}
+          <strong className="font-mono font-semibold text-orange-300">{formatPct(national.el_nino)}</strong> of typical in
+          El Niño, <strong className="font-mono font-semibold text-sky-300">{formatPct(national.la_nina)}</strong> in La
+          Niña, and <strong className="font-mono font-semibold text-slate-100">{formatPct(national.neutral)}</strong> in
+          Neutral winters (<GlossaryTerm entry={JAPAN_GLOSSARY.pctTypical} />).{" "}
+          {nationalFlat
+            ? "Japan as a whole barely changes, so the story is where the snow shifts:"
+            : "Here is where the snow shifts:"}
+        </p>
+        <PhaseCards rankedByPhase={rankedByPhase} phaseCounts={analysis.phaseCounts} />
+        <ThinPhasesNote phaseCounts={analysis.phaseCounts} />
+      </section>
 
-        <Tabs defaultValue="overview" className="space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <TabsList className="bg-slate-900 border border-slate-800">
-              <TabsTrigger value="overview" className="text-xs sm:text-sm">
-                1. Regional Outperformance & IQR Distributions
-              </TabsTrigger>
-              <TabsTrigger value="climate" className="text-xs sm:text-sm">
-                2. Monthly Profile, Storm Intensity & Temperatures
-              </TabsTrigger>
-              <TabsTrigger value="stations" className="text-xs sm:text-sm">
-                3. 40 WMO Stations & 72-Winter Chronology
-              </TabsTrigger>
-            </TabsList>
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <MapPin className="h-3.5 w-3.5 text-sky-400" />
-              <span>Focused Region:</span>
-              <strong className="text-slate-100">{selectedRegion.name_en}</strong>
-              <span className="font-mono text-slate-400">({selectedRegion.name_ja})</span>
-            </div>
+      <section className="rounded-2xl border border-slate-800/90 bg-slate-900/60 p-4 sm:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:divide-x lg:divide-slate-800/80">
+        <div className="lg:col-span-4 space-y-2">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            Show <GlossaryTerm entry={JAPAN_GLOSSARY.enso}>ENSO</GlossaryTerm> Phase
           </div>
+          <PhaseToggle phase={phase} onPhaseChange={setPhase} />
+        </div>
+        <div className="lg:col-span-8 lg:pl-5 space-y-2">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            Winters Included (by the year they end)
+          </div>
+          <YearRangeFilter
+            range={range}
+            onRangeChange={setCustomRange}
+            firstYear={FIRST_YEAR}
+            lastYear={LAST_YEAR}
+            phaseCounts={analysis.phaseCounts}
+          />
+        </div>
+      </section>
 
-          <TabsContent value="overview" className="mt-0">
-            <RegionalComparisonView
-              regions={dataset.regions}
-              selectedRegionId={selectedRegionId}
-              onSelectRegion={setSelectedRegionId}
-            />
-          </TabsContent>
+      <JapanMapPanel
+        summaries={analysis.summaries}
+        stations={dataset.stations}
+        phase={phase}
+        selectedRegion={selectedRegion}
+        onSelectRegion={focusRegion}
+        showStations={showStations}
+        onShowStationsChange={setShowStations}
+      />
 
-          <TabsContent value="climate" className="mt-0">
-            <TempMonthlyIntensityView
-              regions={dataset.regions}
-              selectedRegion={selectedRegion}
-            />
-          </TabsContent>
+      <JapanRegionDetails
+        summaries={analysis.summaries}
+        stations={dataset.stations}
+        nameJa={NAME_JA}
+        range={range}
+        selectedRegion={selectedRegion}
+        onSelectRegion={setSelectedRegion}
+      />
 
-          <TabsContent value="stations" className="mt-0">
-            <StationAndHistoryView
-              regions={dataset.regions}
-              stations={dataset.stations}
-              historicalWinters={dataset.historical_winters}
-              selectedRegionId={selectedRegionId}
-            />
-          </TabsContent>
-        </Tabs>
-      </main>
+      <GlossaryPanel
+        entries={Object.values(JAPAN_GLOSSARY)}
+        summary="What ENSO, % of typical, the Sea of Japan side and the other terms on this page mean"
+      />
+      <JapanAboutData />
     </div>
+  );
+}
+
+function JapanAboutData() {
+  return (
+    <Disclosure
+      title="About the data and method"
+      summary="Where the numbers come from and how they are computed"
+      icon={<Database className="w-4 h-4 text-slate-400" />}
+    >
+      <ul className="list-disc pl-5 space-y-1.5 text-xs text-slate-400 leading-relaxed">
+        <li>
+          Sources: Japan Meteorological Agency (JMA) historical station records for daily snowfall and temperature, JMA&apos;s
+          ENSO event list, and JMA forecast-area boundaries for the map. {dataset.metadata.analysis_period}.
+        </li>
+        <li>
+          Each region&apos;s winter value is the average season snowfall of its stations. That winter is compared with the
+          region&apos;s median winter over the selected years, and a phase&apos;s value is the median over that phase&apos;s
+          winters, the same method the US view uses for snowpack.
+        </li>
+        <li>
+          Winters are classified with JMA&apos;s NINO.3 index (see ENSO in the glossary). Phases with fewer than 5 winters in
+          the selected years are flagged as low confidence.
+        </li>
+        <li>
+          Most stations sit in towns at low elevation, so ski areas higher up usually get far more snow than the
+          centimeter figures. Use the percentages as the guide to how a winter compares with typical.
+        </li>
+        <li>
+          The map shades the JMA forecast areas each region covers, splitting prefectures where JMA does (for example
+          Aomori, Fukushima, Gifu, Kyoto and Hyogo). Distant island groups are left off to keep the main islands in view.
+          Station tables and hover cards use all winters since 1953–54.
+        </li>
+      </ul>
+    </Disclosure>
   );
 }
