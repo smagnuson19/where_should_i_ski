@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Where Should I Ski? Snowpack & ENSO in the US (SNOTEL) and Japan (JMA)",
+  title: "Find the Snow — Snowpack & ENSO in the US (SNOTEL) and Japan (JMA)",
   description:
     "See how El Niño, La Niña and Neutral winters shift mountain snowpack: a US map of 954 USDA NRCS SNOTEL sites (water years 1930–2026) with a year-range filter, plus the Japan JMA regional snowfall dashboard (1953/54–2024/25).",
 };

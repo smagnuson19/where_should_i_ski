@@ -1,4 +1,4 @@
-# Where Should I Ski? Snowpack & ENSO in the US (SNOTEL) and Japan (JMA)
+# Find the Snow — Snowpack & ENSO in the US (SNOTEL) and Japan (JMA)
 
 Two dashboards behind top-level tabs:
 

@@ -20,7 +20,7 @@ const JapanDashboard = dynamic(
 
 type CountryTab = "us" | "japan";
 
-export default function WhereShouldISkiPage() {
+export default function FindTheSnowPage() {
   const [tab, setTab] = useState<CountryTab>("us");
   const [japanOpened, setJapanOpened] = useState(false);
 
@@ -40,7 +40,7 @@ export default function WhereShouldISkiPage() {
             </div>
             <div>
               <div className="text-base sm:text-lg font-bold tracking-tight text-white leading-tight">
-                Where Should I Ski?
+                Find the Snow
               </div>
               <div className="text-xs text-slate-400">
                 How El Niño and La Niña shift mountain snowpack
