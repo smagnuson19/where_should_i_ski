@@ -33,7 +33,16 @@ interface UsEnsoMapProps {
 
 type Hover = { kind: "state"; postal: string; name: string } | { kind: "station"; station: SnotelStation } | null;
 
-const shortLabel = (name: string) => name.replace(/\s*\(.*\)/, "");
+function mapBadgeLabel(rawName: string): { label: string; dx: number; dy: number } {
+  const clean = rawName.replace(/\s*\(.*\)/, "");
+  if (clean.includes("Sierra")) return { label: "Sierra Nevada", dx: -16, dy: 22 };
+  if (clean.includes("Great Basin")) return { label: "Great Basin", dx: 10, dy: -12 };
+  if (clean.includes("Central Rockies")) return { label: "Central Rockies", dx: 14, dy: 4 };
+  if (clean.includes("Northern Rockies")) return { label: "Northern Rockies", dx: 8, dy: 2 };
+  if (clean.includes("Southwest")) return { label: "Southwest", dx: 4, dy: 8 };
+  if (clean.includes("Alaska")) return { label: "Alaska", dx: 10, dy: -6 };
+  return { label: clean, dx: 0, dy: -4 };
+}
 
 export function UsEnsoMap(props: UsEnsoMapProps) {
   const { regions, summaries, stateAssignments, outlines, phase, selectedRegion, sites, stationStats } = props;
@@ -123,13 +132,39 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
         })}
 
         {outlines.map((o) => {
-          const name = shortLabel(regions[o.regionId]?.shortName ?? o.regionId);
-          const width = Math.max(name.length * 6.4 + 18, 64);
+          const { label: name, dx, dy } = mapBadgeLabel(regions[o.regionId]?.shortName ?? o.regionId);
+          const width = Math.max(name.length * 6.3 + 20, 68);
+          const isSelected = selectedRegion === o.regionId;
           return (
-            <g key={`label-${o.regionId}`} transform={`translate(${o.labelAt[0]},${o.labelAt[1]})`} pointerEvents="none">
-              <rect x={-width / 2} y={-19} width={width} height={36} rx={7} fill="#020617" fillOpacity={0.78} />
-              <text y={-5} textAnchor="middle" fill="#cbd5e1" fontSize={11} fontWeight={600}>{name}</text>
-              <text y={12} textAnchor="middle" fill="#ffffff" fontSize={15} fontWeight={800}>{formatPct(regionPct(o.regionId))}</text>
+            <g
+              key={`label-${o.regionId}`}
+              transform={`translate(${o.labelAt[0] + dx},${o.labelAt[1] + dy})`}
+              pointerEvents="none"
+            >
+              <rect
+                x={-width / 2}
+                y={-20}
+                width={width}
+                height={38}
+                rx={8}
+                fill="#020617"
+                fillOpacity={0.86}
+                stroke={isSelected ? "#38bdf8" : "#334155"}
+                strokeWidth={isSelected ? 1.5 : 1}
+              />
+              <text y={-5} textAnchor="middle" fill="#cbd5e1" fontSize={10.5} fontWeight={600}>
+                {name}
+              </text>
+              <text
+                y={12}
+                textAnchor="middle"
+                fill="#ffffff"
+                fontSize={14}
+                fontWeight={700}
+                style={{ fontVariantNumeric: "tabular-nums" }}
+              >
+                {formatPct(regionPct(o.regionId))}
+              </text>
             </g>
           );
         })}

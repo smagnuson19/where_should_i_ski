@@ -20,23 +20,24 @@ export function JapanDashboard() {
 
   return (
     <div className="bg-slate-950 text-slate-100">
-      <header className="border-b border-slate-800/80 bg-slate-900/70">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-sky-500/15 border border-sky-500/40 flex items-center justify-center text-sky-400">
+      <header className="border-b border-slate-800/80 bg-slate-900/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="h-11 w-11 rounded-xl bg-sky-500/15 border border-sky-500/35 flex items-center justify-center text-sky-400 shrink-0">
               <Snowflake className="h-5 w-5" />
             </div>
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-lg sm:text-xl font-bold tracking-tight text-white">
-                  Japan Regional Snowfall & ENSO Climate Atlas
+            <div className="space-y-1">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+                  Japan Regional Snowfall &amp; ENSO Climate Atlas
                 </h1>
-                <Badge className="bg-sky-500/20 text-sky-300 border-sky-500/40 text-xs">
-                  JMA 1953/54–2024/25 (72 Winters)
+                <Badge className="bg-sky-500/15 text-sky-300 border-sky-500/35 font-mono text-xs">
+                  JMA 1953/54–2024/25 · 72 Winters
                 </Badge>
               </div>
-              <p className="text-xs text-slate-400">
-                19 El Niño • 19 La Niña • 34 Neutral Winters across 8 JMA Climate Divisions & 40 WMO Synoptic Stations (1991–2020 Normals)
+              <p className="text-xs sm:text-sm text-slate-400">
+                19 El Niño · 19 La Niña · 34 Neutral winters across 8 JMA climate divisions &amp; 40 WMO synoptic
+                stations (1991–2020 normals)
               </p>
             </div>
           </div>
@@ -46,10 +47,10 @@ export function JapanDashboard() {
               <button
                 key={r.region_id}
                 onClick={() => setSelectedRegionId(r.region_id)}
-                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors border ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
                   r.region_id === selectedRegionId
-                    ? "bg-sky-500/20 text-sky-200 border-sky-500/60"
-                    : "bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200"
+                    ? "bg-sky-500/20 text-sky-200 border-sky-500/50 shadow-xs"
+                    : "bg-slate-900/80 text-slate-300 border-slate-800 hover:bg-slate-800 hover:text-white"
                 }`}
               >
                 {r.name_en.replace(" (Eastern Japan Sea of Japan Side)", "").replace(" / Western Japan (Sea of Japan Side)", "").replace("Kanto-Koshin / Nagano / ", "")}

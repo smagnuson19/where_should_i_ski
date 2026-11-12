@@ -12,7 +12,11 @@ interface PhaseToggleProps {
 
 export function PhaseToggle({ phase, onPhaseChange }: PhaseToggleProps) {
   return (
-    <div role="radiogroup" aria-label="ENSO phase shown on the map" className="inline-flex rounded-lg border border-slate-800 bg-slate-950 p-1 gap-1">
+    <div
+      role="radiogroup"
+      aria-label="ENSO phase shown on the map"
+      className="inline-flex w-full sm:w-auto rounded-xl border border-slate-800 bg-slate-950 p-1 gap-1"
+    >
       {ENSO_PHASES.map((p) => {
         const active = p === phase;
         return (
@@ -22,8 +26,10 @@ export function PhaseToggle({ phase, onPhaseChange }: PhaseToggleProps) {
             role="radio"
             aria-checked={active}
             onClick={() => onPhaseChange(p)}
-            className={`px-3 py-1.5 rounded-md text-xs font-semibold border transition ${
-              active ? PHASE_STYLE[p].active : "border-transparent text-slate-400 hover:text-white hover:bg-slate-800"
+            className={`flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
+              active
+                ? `${PHASE_STYLE[p].active} shadow-xs`
+                : "border-transparent text-slate-400 hover:text-white hover:bg-slate-800/80"
             }`}
           >
             {PHASE_LABEL[p]}

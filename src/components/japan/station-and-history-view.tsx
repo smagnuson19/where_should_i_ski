@@ -4,7 +4,6 @@ import React, { useState, useMemo } from "react";
 import { HistoricalWinter, RegionData, StationData, EnsoPhase } from "@/types/japan-enso";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -64,21 +63,27 @@ export function StationAndHistoryView({ regions, stations, historicalWinters, se
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="h-8 w-56 text-xs bg-slate-950 border-slate-800 text-slate-100"
               />
-              {(["all", "selected_region", "El Niño", "La Niña"] as const).map((f) => (
-                <Button
-                  key={f}
-                  size="sm"
-                  variant={stationFilter === f ? "default" : "outline"}
-                  className="h-7 text-xs border-slate-800"
-                  onClick={() => setStationFilter(f)}
-                >
-                  {f === "all"
-                    ? "All 40 Stations"
-                    : f === "selected_region"
-                    ? "Focused Region"
-                    : `${f} Winners`}
-                </Button>
-              ))}
+              {(["all", "selected_region", "El Niño", "La Niña"] as const).map((f) => {
+                const active = stationFilter === f;
+                return (
+                  <button
+                    key={f}
+                    type="button"
+                    onClick={() => setStationFilter(f)}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition ${
+                      active
+                        ? "bg-sky-500/20 text-sky-200 border-sky-500/50 shadow-xs"
+                        : "bg-slate-900/80 text-slate-300 border-slate-800 hover:bg-slate-800 hover:text-white"
+                    }`}
+                  >
+                    {f === "all"
+                      ? "All 40 Stations"
+                      : f === "selected_region"
+                      ? "Focused Region"
+                      : `${f} Winners`}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </CardHeader>
@@ -171,17 +176,23 @@ export function StationAndHistoryView({ regions, stations, historicalWinters, se
               </CardDescription>
             </div>
             <div className="flex items-center gap-1.5">
-              {(["ALL", "El Niño", "La Niña", "Neutral"] as const).map((ph) => (
-                <Button
-                  key={ph}
-                  size="sm"
-                  variant={phaseFilter === ph ? "default" : "outline"}
-                  className="h-7 text-xs border-slate-800"
-                  onClick={() => setPhaseFilter(ph)}
-                >
-                  {ph}
-                </Button>
-              ))}
+              {(["ALL", "El Niño", "La Niña", "Neutral"] as const).map((ph) => {
+                const active = phaseFilter === ph;
+                return (
+                  <button
+                    key={ph}
+                    type="button"
+                    onClick={() => setPhaseFilter(ph)}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition ${
+                      active
+                        ? "bg-sky-500/20 text-sky-200 border-sky-500/50 shadow-xs"
+                        : "bg-slate-900/80 text-slate-300 border-slate-800 hover:bg-slate-800 hover:text-white"
+                    }`}
+                  >
+                    {ph}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </CardHeader>

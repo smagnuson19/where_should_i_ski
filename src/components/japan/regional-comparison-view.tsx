@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { RegionData } from "@/types/japan-enso";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 interface Props {
   regions: RegionData[];
   selectedRegionId: string;
@@ -27,49 +26,48 @@ export function RegionalComparisonView({ regions, selectedRegionId, onSelectRegi
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <div className="inline-flex rounded-lg border border-slate-800 bg-slate-950 p-1">
-            <Button
-              size="sm"
-              variant={era === "full" ? "default" : "ghost"}
-              className="h-7 text-xs"
-              onClick={() => setEra("full")}
-            >
-              72-Yr Record (1953/54–2024/25)
-            </Button>
-            <Button
-              size="sm"
-              variant={era === "modern" ? "default" : "ghost"}
-              className="h-7 text-xs"
-              onClick={() => setEra("modern")}
-            >
-              Modern Era (1991–2025)
-            </Button>
+          <div className="inline-flex rounded-xl border border-slate-800 bg-slate-950 p-1 gap-1">
+            {(
+              [
+                ["full", "72-Yr Record (1953/54–2024/25)"],
+                ["modern", "Modern Era (1991–2025)"],
+              ] as const
+            ).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setEra(id)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition ${
+                  era === id
+                    ? "bg-sky-500/20 text-sky-200 border-sky-500/50 shadow-xs"
+                    : "border-transparent text-slate-400 hover:text-white hover:bg-slate-800/80"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
-          <div className="inline-flex rounded-lg border border-slate-800 bg-slate-950 p-1">
-            <Button
-              size="sm"
-              variant={metricMode === "pct_norm" ? "default" : "ghost"}
-              className="h-7 text-xs"
-              onClick={() => setMetricMode("pct_norm")}
-            >
-              % 1991–2020 Normal
-            </Button>
-            <Button
-              size="sm"
-              variant={metricMode === "pct_72yr" ? "default" : "ghost"}
-              className="h-7 text-xs"
-              onClick={() => setMetricMode("pct_72yr")}
-            >
-              % 72-Yr Median
-            </Button>
-            <Button
-              size="sm"
-              variant={metricMode === "cm" ? "default" : "ghost"}
-              className="h-7 text-xs"
-              onClick={() => setMetricMode("cm")}
-            >
-              Absolute (cm)
-            </Button>
+          <div className="inline-flex rounded-xl border border-slate-800 bg-slate-950 p-1 gap-1">
+            {(
+              [
+                ["pct_norm", "% 1991–2020 Normal"],
+                ["pct_72yr", "% 72-Yr Median"],
+                ["cm", "Absolute (cm)"],
+              ] as const
+            ).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setMetricMode(id)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition ${
+                  metricMode === id
+                    ? "bg-sky-500/20 text-sky-200 border-sky-500/50 shadow-xs"
+                    : "border-transparent text-slate-400 hover:text-white hover:bg-slate-800/80"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         </div>
       </div>

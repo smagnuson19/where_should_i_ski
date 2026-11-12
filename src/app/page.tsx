@@ -32,22 +32,26 @@ export default function WhereShouldISkiPage() {
 
   return (
     <Tabs value={tab} onValueChange={changeTab} className="min-h-screen gap-0 bg-slate-950 text-slate-100">
-      <header className="sticky top-0 z-40 border-b border-slate-800/80 bg-slate-950/85 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="p-1.5 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-400">
+      <header className="sticky top-0 z-40 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 shadow-xs">
               <CloudSnow className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-sm sm:text-base font-bold tracking-tight text-white">Where Should I Ski?</div>
-              <div className="text-[11px] text-slate-400">How El Niño and La Niña shift mountain snow</div>
+              <div className="text-base sm:text-lg font-bold tracking-tight text-white leading-tight">
+                Where Should I Ski?
+              </div>
+              <div className="text-xs text-slate-400">
+                How El Niño and La Niña shift mountain snowpack
+              </div>
             </div>
           </div>
-          <TabsList className="bg-slate-900 border border-slate-800 h-9!">
-            <TabsTrigger value="us" className="text-xs sm:text-sm px-3">
+          <TabsList className="bg-slate-900/90 border border-slate-800 p-1 rounded-xl h-9!">
+            <TabsTrigger value="us" className="text-xs sm:text-sm px-3.5 rounded-lg">
               United States (SNOTEL)
             </TabsTrigger>
-            <TabsTrigger value="japan" className="text-xs sm:text-sm px-3">
+            <TabsTrigger value="japan" className="text-xs sm:text-sm px-3.5 rounded-lg">
               Japan (JMA)
             </TabsTrigger>
           </TabsList>

@@ -13,13 +13,13 @@ export function Term({ k, children }: { k: GlossaryKey; children?: React.ReactNo
     <Tooltip>
       <TooltipTrigger
         render={<span tabIndex={0} />}
-        className="underline decoration-dotted decoration-slate-500 underline-offset-2 cursor-help"
+        className="border-b border-dotted border-slate-500/70 hover:border-sky-400 hover:text-sky-200 transition-colors cursor-help"
       >
         {children ?? entry.term}
       </TooltipTrigger>
       <TooltipContent className="max-w-xs leading-relaxed">
         <span>
-          <strong>{entry.term}:</strong> {entry.definition}
+          <strong className="text-sky-300">{entry.term}:</strong> {entry.definition}
         </span>
       </TooltipContent>
     </Tooltip>

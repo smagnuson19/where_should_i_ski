@@ -23,22 +23,40 @@ const BORDER: Record<EnsoPhase, string> = {
   neutral: "border-l-slate-500",
 };
 
-function PhaseSentence({ phase, summaries, regions }: Omit<PlainSummaryProps, "phaseCounts" | "range" | "bandLabel"> & { phase: EnsoPhase }) {
+function PhaseSentence({
+  phase,
+  summaries,
+  regions,
+}: Omit<PlainSummaryProps, "phaseCounts" | "range" | "bandLabel"> & { phase: EnsoPhase }) {
   const ranked = rankRegions(summaries, regions, phase);
   const { best, worst, spread } = bestAndWorst(ranked);
-  if (!best || !worst) return <p className="text-sm text-slate-300">Not enough data for this selection.</p>;
-  if (spread < 10) {
+  if (!best || !worst) {
+    return <p className="text-xs text-slate-400">Not enough data for this selection.</p>;
+  }
+  if (spread <= 10) {
     return (
-      <p className="text-sm text-slate-200 leading-relaxed">
-        No clear winner: every region lands between {formatPct(worst.pct)} and {formatPct(best.pct)} of typical.
+      <p className="text-xs sm:text-[13px] text-slate-300 leading-relaxed">
+        No single standout — every region stays near normal, between{" "}
+        <span className="font-mono font-semibold text-white">{formatPct(worst.pct)}</span> and{" "}
+        <span className="font-mono font-semibold text-white">{formatPct(best.pct)}</span> of typical.
       </p>
     );
   }
   return (
-    <p className="text-sm text-slate-200 leading-relaxed">
-      <strong className="text-white">{best.name}</strong> does best ({formatPct(best.pct)} of typical);{" "}
-      <strong className="text-white">{worst.name}</strong> does worst ({formatPct(worst.pct)}).
-    </p>
+    <div className="space-y-1 text-xs sm:text-[13px] leading-snug">
+      <div className="flex items-baseline justify-between gap-2">
+        <span className="text-slate-400">
+          Best: <strong className="font-semibold text-slate-100">{best.name}</strong>
+        </span>
+        <span className="font-mono font-bold text-emerald-300">{formatPct(best.pct)}</span>
+      </div>
+      <div className="flex items-baseline justify-between gap-2">
+        <span className="text-slate-400">
+          Lowest: <strong className="font-medium text-slate-300">{worst.name}</strong>
+        </span>
+        <span className="font-mono font-semibold text-amber-300/90">{formatPct(worst.pct)}</span>
+      </div>
+    </div>
   );
 }
 
@@ -47,37 +65,48 @@ export function PlainSummary({ summaries, regions, phaseCounts, range, bandLabel
   const thinPhases = ENSO_PHASES.filter((p) => phaseCounts[p] < LOW_CONFIDENCE_WINTERS);
 
   return (
-    <section className="rounded-xl border border-sky-500/30 bg-gradient-to-br from-sky-950/40 via-slate-900/70 to-slate-900/60 p-4 sm:p-5 space-y-3">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+    <section className="rounded-2xl border border-sky-500/25 bg-gradient-to-br from-sky-950/35 via-slate-900/80 to-slate-900/60 p-4 sm:p-5 space-y-3.5 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-sky-400" />
-          The short version
+          At a Glance: How ENSO Splits the West
         </h2>
-        <span className="text-xs text-slate-400">
-          {phaseCounts.total} winters, {winterSpan(range)} · {bandLabel}
+        <span className="text-xs font-mono text-slate-400 bg-slate-950/60 border border-slate-800/80 px-2.5 py-0.5 rounded-full">
+          {phaseCounts.total} winters · {winterSpan(range)} · {bandLabel}
         </span>
       </div>
 
       {west && (
-        <p className="text-sm text-slate-300 leading-relaxed max-w-4xl">
-          Across all Western <Term k="snotel">SNOTEL</Term> sites, a typical El Niño winter peaks at{" "}
-          <strong className="text-orange-300">{formatPct(west.el_nino.pctOfMedian)}</strong> of normal snowpack, La Niña at{" "}
-          <strong className="text-sky-300">{formatPct(west.la_nina.pctOfMedian)}</strong> and Neutral at{" "}
-          <strong className="text-slate-100">{formatPct(west.neutral.pctOfMedian)}</strong> (
-          <Term k="pctMedian">% of median</Term> <Term k="peakSwe">peak SWE</Term>). The real story is regional:
+        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-4xl">
+          Across all Western <Term k="snotel">SNOTEL</Term> sites, median winter snowpack peaks at{" "}
+          <strong className="font-mono font-semibold text-orange-300">{formatPct(west.el_nino.pctOfMedian)}</strong> of
+          normal in El Niño,{" "}
+          <strong className="font-mono font-semibold text-sky-300">{formatPct(west.la_nina.pctOfMedian)}</strong> in La
+          Niña, and{" "}
+          <strong className="font-mono font-semibold text-slate-100">{formatPct(west.neutral.pctOfMedian)}</strong> in
+          Neutral winters (<Term k="pctMedian">% of median</Term> <Term k="peakSwe">peak SWE</Term>). The real divide is
+          north vs. south:
         </p>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         {ENSO_PHASES.map((p) => (
-          <div key={p} className={`rounded-lg border border-slate-800 border-l-4 ${BORDER[p]} bg-slate-950/50 p-3 space-y-1`}>
-            <div className={`text-xs font-semibold ${PHASE_STYLE[p].text} flex items-center gap-1.5`}>
-              {PHASE_LABEL[p]} winters ({phaseCounts[p]})
-              {phaseCounts[p] < LOW_CONFIDENCE_WINTERS && (
-                <span className="inline-flex items-center gap-0.5 text-[10px] text-amber-300">
-                  <AlertTriangle className="w-3 h-3" /> low confidence
-                </span>
-              )}
+          <div
+            key={p}
+            className={`rounded-xl border border-slate-800/90 border-l-4 ${BORDER[p]} bg-slate-950/60 p-3.5 space-y-2`}
+          >
+            <div className="flex items-center justify-between gap-2">
+              <span className={`text-xs font-bold tracking-tight ${PHASE_STYLE[p].text}`}>
+                {PHASE_LABEL[p]} Winters
+              </span>
+              <span className="inline-flex items-center gap-1 text-[11px] font-mono text-slate-400">
+                n={phaseCounts[p]}
+                {phaseCounts[p] < LOW_CONFIDENCE_WINTERS && (
+                  <span className="inline-flex items-center gap-0.5 text-[10px] font-sans text-amber-300">
+                    <AlertTriangle className="w-3 h-3" /> low n
+                  </span>
+                )}
+              </span>
             </div>
             <PhaseSentence phase={p} summaries={summaries} regions={regions} />
           </div>
