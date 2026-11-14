@@ -5,6 +5,7 @@ import { Database, Sparkles } from "lucide-react";
 import rawData from "@/data/jma-enso-snowfall-data.json";
 import { JmaEnsoDataset } from "@/types/japan-enso";
 import { EnsoPhase } from "@/types/snotel";
+import { SkiResort } from "@/types/resorts";
 import { ENSO_PHASES, PhaseRecord, YearRange } from "@/types/snotel-range";
 import { JapanMapPanel } from "@/components/japan/japan-map-panel";
 import { JapanRegionDetails, JAPAN_REGION_DETAILS_ID } from "@/components/japan/japan-region-details";
@@ -13,8 +14,12 @@ import { YearRangeFilter } from "@/components/snotel/year-range-filter";
 import { PhaseCards, ThinPhasesNote } from "@/components/snotel/plain-summary";
 import { GlossaryPanel, GlossaryTerm } from "@/components/snotel/glossary";
 import { Disclosure } from "@/components/snotel/disclosure";
+import { ResortList } from "@/components/resorts/resort-list";
+import { ResortDetailModal } from "@/components/resorts/resort-detail-modal";
+import { useJapanResorts } from "@/components/resorts/use-resort-snowfall";
 import { analyzeJapan, rankJapanRegions } from "@/lib/japan/analysis";
 import { JAPAN_GLOSSARY } from "@/lib/japan/glossary";
+import { JAPAN_REGION_BY_ID } from "@/lib/japan/regions";
 import { RankedRegion } from "@/lib/snotel/story";
 import { formatPct } from "@/lib/snotel/enso-scale";
 import { winterSpan } from "@/lib/snotel/year-range";
@@ -29,9 +34,14 @@ export function JapanDashboard() {
   const [customRange, setCustomRange] = useState<YearRange | null>(null);
   const [selectedRegion, setSelectedRegion] = useState("hokkaido_soj");
   const [showStations, setShowStations] = useState(true);
+  const [showResorts, setShowResorts] = useState(false);
+  const [resortSearch, setResortSearch] = useState("");
+  const [activeResort, setActiveResort] = useState<SkiResort | null>(null);
+  const [resortModalOpen, setResortModalOpen] = useState(false);
 
   const range = useMemo(() => customRange ?? { start: FIRST_YEAR, end: LAST_YEAR }, [customRange]);
   const analysis = useMemo(() => analyzeJapan(dataset, range), [range]);
+  const { resorts, stats: resortStats } = useJapanResorts(range);
   const rankedByPhase = useMemo(
     () =>
       Object.fromEntries(ENSO_PHASES.map((p) => [p, rankJapanRegions(analysis.summaries, p)])) as PhaseRecord<
@@ -40,11 +50,25 @@ export function JapanDashboard() {
     [analysis]
   );
 
+  const listedResorts = useMemo(() => {
+    const q = resortSearch.trim().toLowerCase();
+    return resorts.filter(
+      (r) =>
+        (selectedRegion === "ALL" || r.region === selectedRegion) &&
+        (!q || r.name.toLowerCase().includes(q) || (r.nameJa ?? "").includes(q) || r.state.toLowerCase().includes(q))
+    );
+  }, [resorts, selectedRegion, resortSearch]);
+
   const focusRegion = (regionId: string) => {
     setSelectedRegion(regionId);
     requestAnimationFrame(() =>
       document.getElementById(JAPAN_REGION_DETAILS_ID)?.scrollIntoView({ behavior: "smooth", block: "start" })
     );
+  };
+
+  const openResort = (r: SkiResort) => {
+    setActiveResort(r);
+    setResortModalOpen(true);
   };
 
   const national = analysis.nationalPct;
@@ -123,7 +147,29 @@ export function JapanDashboard() {
         onSelectRegion={focusRegion}
         showStations={showStations}
         onShowStationsChange={setShowStations}
+        resorts={resorts}
+        showResorts={showResorts}
+        onShowResortsChange={setShowResorts}
+        resortStats={resortStats}
+        onOpenResort={openResort}
       />
+
+      {showResorts && resorts.length > 0 && (
+        <ResortList
+          resorts={listedResorts}
+          stats={resortStats}
+          phase={phase}
+          searchQuery={resortSearch}
+          onSearchChange={setResortSearch}
+          scopeLabel={
+            selectedRegion === "ALL"
+              ? "all regions"
+              : JAPAN_REGION_BY_ID[selectedRegion]?.shortName ?? selectedRegion
+          }
+          unit="cm"
+          onOpenResort={openResort}
+        />
+      )}
 
       <JapanRegionDetails
         summaries={analysis.summaries}
@@ -132,18 +178,31 @@ export function JapanDashboard() {
         range={range}
         selectedRegion={selectedRegion}
         onSelectRegion={setSelectedRegion}
+        resorts={resorts.filter((r) => r.region === selectedRegion)}
+        resortStats={resortStats}
+        phase={phase}
+        onOpenResort={openResort}
       />
 
       <GlossaryPanel
         entries={Object.values(JAPAN_GLOSSARY)}
         summary="What ENSO, % of typical, the Sea of Japan side and the other terms on this page mean"
       />
-      <JapanAboutData />
+      <JapanAboutData resortCount={resorts.length || undefined} />
+
+      <ResortDetailModal
+        resort={activeResort}
+        stats={activeResort ? resortStats.get(activeResort.id) : undefined}
+        open={resortModalOpen}
+        onOpenChange={setResortModalOpen}
+        unit="cm"
+        regionName={activeResort?.region ? JAPAN_REGION_BY_ID[activeResort.region]?.shortName : null}
+      />
     </div>
   );
 }
 
-function JapanAboutData() {
+function JapanAboutData({ resortCount }: { resortCount?: number }) {
   return (
     <Disclosure
       title="About the data and method"
@@ -173,6 +232,13 @@ function JapanAboutData() {
           Aomori, Fukushima, Gifu, Kyoto and Hyogo). Distant island groups are left off to keep the main islands in view.
           Station tables and hover cards use all winters since 1953–54.
         </li>
+        {resortCount != null && resortCount > 0 && (
+          <li>
+            Ski resorts ({resortCount}) come from OpenSkiData / OpenSkiMap.org (© OpenStreetMap contributors ODbL,
+            Skimap.org, Who&apos;s On First, © Mapterhorn). Resort snowfall is the cold-season total at the nearest JMA
+            AMeDAS stations — often in the valley below the slopes — so use the percentages more than the totals.
+          </li>
+        )}
       </ul>
     </Disclosure>
   );

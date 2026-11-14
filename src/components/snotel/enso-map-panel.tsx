@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { Map as MapIcon, MapPin } from "lucide-react";
+import { Map as MapIcon, MapPin, Mountain } from "lucide-react";
 import { EnsoPhase, RegionInfo, SnotelStation } from "@/types/snotel";
 import { RegionRangeSummary, StationRangeStats } from "@/types/snotel-range";
+import { ResortSnowfallStats, SkiResort } from "@/types/resorts";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UsEnsoMap } from "@/components/snotel/us-enso-map";
@@ -27,6 +28,12 @@ interface EnsoMapPanelProps {
   onShowSitesChange: (show: boolean) => void;
   activeStation: SnotelStation | null;
   onOpenStation: (station: SnotelStation) => void;
+  resorts?: SkiResort[];
+  showResorts?: boolean;
+  onShowResortsChange?: (show: boolean) => void;
+  resortStats?: Map<string, ResortSnowfallStats>;
+  activeResort?: SkiResort | null;
+  onOpenResort?: (resort: SkiResort) => void;
 }
 
 export function EnsoMapPanel(props: EnsoMapPanelProps) {
@@ -98,6 +105,19 @@ export function EnsoMapPanel(props: EnsoMapPanelProps) {
               {props.showSites && <span className="font-mono text-slate-400">({props.visibleSites.length})</span>}
               <Switch checked={props.showSites} onCheckedChange={(v) => props.onShowSitesChange(Boolean(v))} />
             </label>
+            {props.onShowResortsChange && (
+              <label className="flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer bg-slate-950/70 border border-slate-800 px-3 py-1.5 rounded-lg hover:border-slate-700 transition">
+                <Mountain className="w-3.5 h-3.5 text-sky-400" />
+                Show ski resorts
+                {props.showResorts && props.resorts && (
+                  <span className="font-mono text-slate-400">({props.resorts.length})</span>
+                )}
+                <Switch
+                  checked={Boolean(props.showResorts)}
+                  onCheckedChange={(v) => props.onShowResortsChange?.(Boolean(v))}
+                />
+              </label>
+            )}
           </div>
         </div>
 
@@ -115,8 +135,13 @@ export function EnsoMapPanel(props: EnsoMapPanelProps) {
           stationStats={props.stationStats}
           activeStation={props.activeStation}
           onOpenStation={props.onOpenStation}
+          resorts={props.resorts}
+          showResorts={props.showResorts}
+          resortStats={props.resortStats}
+          activeResort={props.activeResort}
+          onOpenResort={props.onOpenResort}
         />
-        <MapLegend phase={phase} showSites={props.showSites} />
+        <MapLegend phase={phase} showSites={props.showSites} showResorts={props.showResorts} />
       </div>
 
       <div className="lg:col-span-4">

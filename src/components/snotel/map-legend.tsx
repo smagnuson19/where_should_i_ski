@@ -29,7 +29,15 @@ export function LegendSwatch({ color, children }: { color: string; children: Rea
   );
 }
 
-export function MapLegend({ phase, showSites }: { phase: EnsoPhase; showSites: boolean }) {
+export function MapLegend({
+  phase,
+  showSites,
+  showResorts = false,
+}: {
+  phase: EnsoPhase;
+  showSites: boolean;
+  showResorts?: boolean;
+}) {
   return (
     <div className="space-y-2.5 pt-1 text-xs text-slate-300">
       <div className="text-slate-400 leading-relaxed">
@@ -37,12 +45,24 @@ export function MapLegend({ phase, showSites }: { phase: EnsoPhase; showSites: b
         <strong className="font-semibold text-slate-200">{PHASE_LABEL[phase]}</strong> winters as{" "}
         <Term k="pctMedian">% of median</Term> (<span className="font-mono text-slate-200">100%</span> = typical
         winter).
-        {showSites ? " Station dots use the same scale." : ""}
+        {showSites ? " Station dots use the same snowpack scale." : ""}
+        {showResorts ? (
+          <>
+            {" "}
+            Diamond markers are ski resorts colored by season <Term k="snowfall">snowfall</Term> (not SWE).
+          </>
+        ) : null}
       </div>
       <PctScale />
       <div className="flex flex-wrap gap-4 text-[11px] text-slate-400">
         <LegendSwatch color={NO_DATA_COLOR}>No sites in this elevation band</LegendSwatch>
         <LegendSwatch color={OUTSIDE_NETWORK_COLOR}>Outside the SNOTEL network</LegendSwatch>
+        {showResorts && (
+          <span className="inline-flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rotate-45 border border-slate-500 bg-sky-400" />
+            Ski resort (season snowfall)
+          </span>
+        )}
       </div>
     </div>
   );

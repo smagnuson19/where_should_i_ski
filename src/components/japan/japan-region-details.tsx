@@ -1,16 +1,18 @@
 "use client";
 
 import React from "react";
-import { AlertTriangle, CalendarRange, CloudSnow, History, MapPin } from "lucide-react";
+import { AlertTriangle, CalendarRange, CloudSnow, History, MapPin, Mountain } from "lucide-react";
+import { EnsoPhase } from "@/types/snotel";
 import { ENSO_PHASES, PhaseRecord, YearRange } from "@/types/snotel-range";
 import { StationData } from "@/types/japan-enso";
+import { ResortSnowfallStats, SkiResort } from "@/types/resorts";
 import { Disclosure } from "@/components/snotel/disclosure";
 import { GlossaryTerm } from "@/components/snotel/glossary";
 import { MonthlySnowfallChart, WinterHistoryChart } from "@/components/japan/japan-charts";
 import { JapanPhaseSignal, JapanRegionSummary } from "@/lib/japan/analysis";
 import { JAPAN_GLOSSARY } from "@/lib/japan/glossary";
 import { JAPAN_REGIONS, JAPAN_REGION_BY_ID, TO_JMA_PHASE } from "@/lib/japan/regions";
-import { formatPct } from "@/lib/snotel/enso-scale";
+import { formatPct, pctColor } from "@/lib/snotel/enso-scale";
 import { PHASE_LABEL, PHASE_STYLE, winterSpan } from "@/lib/snotel/year-range";
 
 export const JAPAN_REGION_DETAILS_ID = "japan-region-details";
@@ -26,6 +28,10 @@ interface JapanRegionDetailsProps {
   range: YearRange;
   selectedRegion: string;
   onSelectRegion: (regionId: string) => void;
+  resorts?: SkiResort[];
+  resortStats?: Map<string, ResortSnowfallStats>;
+  phase?: EnsoPhase;
+  onOpenResort?: (resort: SkiResort) => void;
 }
 
 export function JapanRegionDetails(props: JapanRegionDetailsProps) {
@@ -34,6 +40,15 @@ export function JapanRegionDetails(props: JapanRegionDetailsProps) {
   const summary = props.summaries[selectedRegion];
   if (!info || !summary) return null;
   const regionStations = props.stations.filter((s) => s.region_id === selectedRegion);
+  const phase = props.phase ?? "el_nino";
+  const topResorts = [...(props.resorts ?? [])]
+    .filter((r) => r.match !== "none")
+    .sort(
+      (a, b) =>
+        (props.resortStats?.get(b.id)?.phases[phase].pctOfTypical ?? -1) -
+        (props.resortStats?.get(a.id)?.phases[phase].pctOfTypical ?? -1)
+    )
+    .slice(0, 8);
 
   return (
     <section id={JAPAN_REGION_DETAILS_ID} className="space-y-4 scroll-mt-20 pt-2">
@@ -94,6 +109,45 @@ export function JapanRegionDetails(props: JapanRegionDetailsProps) {
         >
           <StormTable phases={summary.phases} />
         </Disclosure>
+
+        {topResorts.length > 0 && (
+          <Disclosure
+            icon={<Mountain className="w-4 h-4 text-sky-400" />}
+            title={`Ski resorts: ${info.shortName} (${props.resorts?.length ?? 0})`}
+            summary={`Top resorts by season snowfall in ${PHASE_LABEL[phase]} winters vs. typical.`}
+            defaultOpen
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+              {topResorts.map((r) => {
+                const s = props.resortStats?.get(r.id);
+                const pct = s?.phases[phase].pctOfTypical ?? null;
+                return (
+                  <button
+                    key={r.id}
+                    type="button"
+                    onClick={() => props.onOpenResort?.(r)}
+                    className="text-left rounded-lg border border-slate-800/90 bg-slate-950/70 hover:bg-slate-800/80 hover:border-sky-500/50 p-2.5 transition"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-semibold text-xs text-white truncate">
+                        {r.name}
+                        {r.nameJa ? <span className="font-normal text-slate-400"> · {r.nameJa}</span> : null}
+                      </span>
+                      <span className="text-xs font-mono font-semibold flex items-center gap-1.5 text-white">
+                        <span className="w-2 h-2 rotate-45" style={{ backgroundColor: pctColor(pct) }} />
+                        {formatPct(pct)}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-slate-400 mt-0.5">
+                      {r.verticalM.toLocaleString()} m vert
+                      {s?.typicalSnow != null ? ` · typical ${s.typicalSnow} cm` : ""}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </Disclosure>
+        )}
 
         <Disclosure
           icon={<MapPin className="w-4 h-4 text-emerald-400" />}

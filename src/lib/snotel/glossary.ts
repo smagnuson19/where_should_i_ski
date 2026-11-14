@@ -3,6 +3,7 @@ export type GlossaryKey =
   | "enso"
   | "oni"
   | "swe"
+  | "snowfall"
   | "peakSwe"
   | "pctMedian"
   | "waterYear"
@@ -29,6 +30,11 @@ export const GLOSSARY: Record<GlossaryKey, { term: string; definition: string }>
     term: "SWE",
     definition:
       "Snow water equivalent: the inches of water you would get by melting the snowpack. As a rough guide, 1 inch of SWE is about 3–5 inches of settled snow.",
+  },
+  snowfall: {
+    term: "Snowfall vs. SWE",
+    definition:
+      "Snowfall is new snow measured as it falls (inches or centimeters of depth). SWE is how much water the snowpack holds. They usually move together, but a warm stormy winter can have big snowfall and low peak SWE. Resort markers use snowfall; the US region map uses snowpack (SWE).",
   },
   peakSwe: {
     term: "Peak SWE",

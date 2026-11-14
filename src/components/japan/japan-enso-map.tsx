@@ -5,6 +5,7 @@ import { MapPin, MousePointerClick } from "lucide-react";
 import { EnsoPhase } from "@/types/snotel";
 import { ENSO_PHASES } from "@/types/snotel-range";
 import { StationData } from "@/types/japan-enso";
+import { ResortSnowfallStats, SkiResort } from "@/types/resorts";
 import { JapanRegionSummary } from "@/lib/japan/analysis";
 import {
   AREA_SHAPES,
@@ -19,7 +20,7 @@ import {
 import { JAPAN_REGIONS, JAPAN_REGION_BY_ID, TO_JMA_PHASE } from "@/lib/japan/regions";
 import { OUTSIDE_NETWORK_COLOR, formatPct, pctColor, pctMeaning } from "@/lib/snotel/enso-scale";
 import { PHASE_LABEL, PHASE_STYLE } from "@/lib/snotel/year-range";
-import { HOVER_CARD_BASE, PhaseRow } from "@/components/snotel/map-hover-card";
+import { HOVER_CARD_BASE, PhaseRow, ResortHoverCard } from "@/components/snotel/map-hover-card";
 
 const SEA_LABELS: { text: string; at: [number, number] }[] = [
   { text: "Sea of Japan", at: [134.0, 41.6] },
@@ -32,9 +33,16 @@ interface JapanEnsoMapProps {
   selectedRegion: string;
   onSelectRegion: (regionId: string) => void;
   stations: StationData[] | null;
+  resorts?: SkiResort[] | null;
+  resortStats?: Map<string, ResortSnowfallStats>;
+  onOpenResort?: (resort: SkiResort) => void;
 }
 
-type Hover = { kind: "region"; regionId: string; prefecture?: string } | { kind: "station"; station: StationData } | null;
+type Hover =
+  | { kind: "region"; regionId: string; prefecture?: string }
+  | { kind: "station"; station: StationData }
+  | { kind: "resort"; resort: SkiResort }
+  | null;
 
 function xy(lonLat: [number, number]): [number, number] {
   return projectLonLat(lonLat[0], lonLat[1]) ?? [0, 0];
@@ -46,7 +54,16 @@ function cardClass(lonLat: [number, number]): string {
   return `absolute ${corner} ${HOVER_CARD_BASE}`;
 }
 
-export function JapanEnsoMap({ summaries, phase, selectedRegion, onSelectRegion, stations }: JapanEnsoMapProps) {
+export function JapanEnsoMap({
+  summaries,
+  phase,
+  selectedRegion,
+  onSelectRegion,
+  stations,
+  resorts,
+  resortStats,
+  onOpenResort,
+}: JapanEnsoMapProps) {
   const [hover, setHover] = useState<Hover>(null);
   const regionPct = (regionId: string) => summaries[regionId]?.phases[phase].pctOfTypical ?? null;
   const hoveredRegion = hover?.kind === "region" ? hover.regionId : null;
@@ -58,6 +75,15 @@ export function JapanEnsoMap({ summaries, phase, selectedRegion, onSelectRegion,
         return p ? [{ st, x: p[0], y: p[1] }] : [];
       }),
     [stations]
+  );
+
+  const resortPoints = useMemo(
+    () =>
+      (resorts ?? []).flatMap((r) => {
+        const p = projectLonLat(r.lon, r.lat);
+        return p ? [{ r, x: p[0], y: p[1] }] : [];
+      }),
+    [resorts]
   );
 
   return (
@@ -106,6 +132,39 @@ export function JapanEnsoMap({ summaries, phase, selectedRegion, onSelectRegion,
               strokeWidth={o.regionId === selectedRegion ? 2.6 : emphasized ? 1.8 : 1.4}
               pointerEvents="none"
             />
+          );
+        })}
+
+        {resortPoints.map(({ r, x, y }) => {
+          const stats = resortStats?.get(r.id);
+          const pct = stats?.phases[phase].pctOfTypical ?? null;
+          const active = hover?.kind === "resort" && hover.resort.id === r.id;
+          const dimmed = selectedRegion !== "ALL" && r.region !== selectedRegion;
+          const size = active ? 5.2 : 3.8;
+          const fill = r.match === "none" ? "#64748b" : pctColor(pct);
+          return (
+            <g
+              key={`resort-${r.id}`}
+              className="cursor-pointer"
+              onMouseEnter={() => setHover({ kind: "resort", resort: r })}
+              onMouseLeave={() => setHover(null)}
+              onClick={() => {
+                if (r.region) onSelectRegion(r.region);
+                onOpenResort?.(r);
+              }}
+            >
+              <rect
+                x={x - size}
+                y={y - size}
+                width={size * 2}
+                height={size * 2}
+                transform={`rotate(45 ${x} ${y})`}
+                fill={fill}
+                fillOpacity={dimmed ? 0.35 : 1}
+                stroke={active ? "#ffffff" : "#020617"}
+                strokeWidth={active ? 1.6 : 0.8}
+              />
+            </g>
           );
         })}
 
@@ -187,6 +246,30 @@ export function JapanEnsoMap({ summaries, phase, selectedRegion, onSelectRegion,
         <RegionCard regionId={hover.regionId} prefecture={hover.prefecture} summary={summaries[hover.regionId]} phase={phase} />
       )}
       {hover?.kind === "station" && <StationCard station={hover.station} />}
+      {hover?.kind === "resort" && (
+        <ResortHoverCard
+          className={cardClass([hover.resort.lon, hover.resort.lat])}
+          name={hover.resort.nameJa ? `${hover.resort.name} · ${hover.resort.nameJa}` : hover.resort.name}
+          state={hover.resort.state}
+          typicalSnow={resortStats?.get(hover.resort.id)?.typicalSnow}
+          unit="cm"
+          sourceLabel={resortStats?.get(hover.resort.id)?.sourceLabel ?? hover.resort.match}
+          phaseValues={{
+            el_nino: {
+              pct: resortStats?.get(hover.resort.id)?.phases.el_nino.pctOfTypical ?? null,
+              winters: resortStats?.get(hover.resort.id)?.phases.el_nino.winters ?? 0,
+            },
+            la_nina: {
+              pct: resortStats?.get(hover.resort.id)?.phases.la_nina.pctOfTypical ?? null,
+              winters: resortStats?.get(hover.resort.id)?.phases.la_nina.winters ?? 0,
+            },
+            neutral: {
+              pct: resortStats?.get(hover.resort.id)?.phases.neutral.pctOfTypical ?? null,
+              winters: resortStats?.get(hover.resort.id)?.phases.neutral.winters ?? 0,
+            },
+          }}
+        />
+      )}
     </div>
   );
 }

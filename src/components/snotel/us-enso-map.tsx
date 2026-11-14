@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Earth, Minus, Plus } from "lucide-react";
 import { EnsoPhase, RegionInfo, SnotelStation } from "@/types/snotel";
 import { RegionRangeSummary, StationRangeStats } from "@/types/snotel-range";
+import { ResortSnowfallStats, SkiResort } from "@/types/resorts";
 import {
   FULL_MAP_VIEW,
   MAP_HEIGHT,
@@ -21,7 +22,7 @@ import {
 } from "@/lib/snotel/us-map";
 import { OUTSIDE_NETWORK_COLOR, formatPct, pctColor } from "@/lib/snotel/enso-scale";
 import { LOW_CONFIDENCE_WINTERS, PHASE_LABEL } from "@/lib/snotel/year-range";
-import { RegionHoverCard, StationHoverCard } from "@/components/snotel/map-hover-card";
+import { RegionHoverCard, ResortHoverCard, StationHoverCard } from "@/components/snotel/map-hover-card";
 
 interface UsEnsoMapProps {
   regions: Record<string, RegionInfo>;
@@ -37,9 +38,18 @@ interface UsEnsoMapProps {
   stationStats: Map<string, StationRangeStats>;
   activeStation: SnotelStation | null;
   onOpenStation: (station: SnotelStation) => void;
+  resorts?: SkiResort[];
+  showResorts?: boolean;
+  resortStats?: Map<string, ResortSnowfallStats>;
+  activeResort?: SkiResort | null;
+  onOpenResort?: (resort: SkiResort) => void;
 }
 
-type Hover = { kind: "state"; postal: string; name: string } | { kind: "station"; station: SnotelStation } | null;
+type Hover =
+  | { kind: "state"; postal: string; name: string }
+  | { kind: "station"; station: SnotelStation }
+  | { kind: "resort"; resort: SkiResort }
+  | null;
 
 type Point = { st: SnotelStation; x: number; y: number };
 
@@ -215,7 +225,6 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
   const regionPct = (regionId: string) => summaries[regionId]?.phases[phase].pctOfMedian ?? null;
   const k = view.w / MAP_WIDTH;
   const zoomed = view.w < MAP_WIDTH - 1;
-  const drawSites = showSites || zoomed;
   const hideBadges = view.w < MAP_WIDTH * 0.72;
 
   const points = useMemo(
@@ -225,6 +234,15 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
         return xy ? [{ st, x: xy[0], y: xy[1] }] : [];
       }),
     [sites]
+  );
+
+  const resortPoints = useMemo(
+    () =>
+      (props.resorts ?? []).flatMap((r) => {
+        const xy = projectLonLat(r.lon, r.lat);
+        return xy ? [{ r, x: xy[0], y: xy[1] }] : [];
+      }),
+    [props.resorts]
   );
 
   const spotlight = useMemo(() => {
@@ -349,7 +367,47 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
           />
         ))}
 
-        {drawSites &&
+        {props.showResorts &&
+          resortPoints
+            .filter((p) => !spotlight || p.r.state === spotlight.postal)
+            .map(({ r, x, y }) => {
+              const stats = props.resortStats?.get(r.id);
+              const pct = stats?.phases[phase].pctOfTypical ?? null;
+              const active =
+                props.activeResort?.id === r.id || (hover?.kind === "resort" && hover.resort.id === r.id);
+              const dimmed = spotlight ? r.state !== spotlight.postal : selectedRegion !== "ALL" && r.region !== selectedRegion;
+              const size = (active ? 5.2 : 3.8) * Math.pow(k, 0.28);
+              const fill = r.match === "none" ? "#64748b" : pctColor(pct);
+              return (
+                <g
+                  key={`resort-${r.id}`}
+                  className="cursor-pointer"
+                  onMouseEnter={() => setHover({ kind: "resort", resort: r })}
+                  onMouseLeave={() => setHover(null)}
+                  onClick={() => {
+                    if (suppressClick.current) {
+                      suppressClick.current = false;
+                      return;
+                    }
+                    props.onOpenResort?.(r);
+                  }}
+                >
+                  <rect
+                    x={x - size}
+                    y={y - size}
+                    width={size * 2}
+                    height={size * 2}
+                    transform={`rotate(45 ${x} ${y})`}
+                    fill={fill}
+                    fillOpacity={dimmed ? 0.28 : 1}
+                    stroke={active ? "#ffffff" : "#020617"}
+                    strokeWidth={(active ? 1.6 : 0.7) * k}
+                  />
+                </g>
+              );
+            })}
+
+        {showSites &&
           orderedPoints.filter((p) => !spotlight || p.st.state === spotlight.postal).map(({ st, x, y }) => {
             const active =
               props.activeStation?.triplet === st.triplet || (hover?.kind === "station" && hover.station.triplet === st.triplet);
@@ -499,6 +557,29 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
       )}
 
       {hover?.kind === "station" && <StationHoverCard station={hover.station} stats={stationStats.get(hover.station.triplet)} />}
+      {hover?.kind === "resort" && (
+        <ResortHoverCard
+          name={hover.resort.name}
+          state={hover.resort.state}
+          typicalSnow={props.resortStats?.get(hover.resort.id)?.typicalSnow}
+          unit="in"
+          sourceLabel={props.resortStats?.get(hover.resort.id)?.sourceLabel ?? hover.resort.match}
+          phaseValues={{
+            el_nino: {
+              pct: props.resortStats?.get(hover.resort.id)?.phases.el_nino.pctOfTypical ?? null,
+              winters: props.resortStats?.get(hover.resort.id)?.phases.el_nino.winters ?? 0,
+            },
+            la_nina: {
+              pct: props.resortStats?.get(hover.resort.id)?.phases.la_nina.pctOfTypical ?? null,
+              winters: props.resortStats?.get(hover.resort.id)?.phases.la_nina.winters ?? 0,
+            },
+            neutral: {
+              pct: props.resortStats?.get(hover.resort.id)?.phases.neutral.pctOfTypical ?? null,
+              winters: props.resortStats?.get(hover.resort.id)?.phases.neutral.winters ?? 0,
+            },
+          }}
+        />
+      )}
       {hover?.kind === "state" && !spotlight && hoveredState && regions[hoveredState.regionId] && (
         <RegionHoverCard
           stateName={hover.name}

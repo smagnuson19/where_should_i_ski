@@ -18,16 +18,31 @@ const JapanDashboard = dynamic(
   }
 );
 
-type CountryTab = "us" | "japan";
+const BacktestDashboard = dynamic(
+  () => import("@/components/backtest/backtest-dashboard").then((m) => m.BacktestDashboard),
+  {
+    loading: () => (
+      <div className="min-h-[60vh] flex items-center justify-center gap-2 text-sm text-slate-300">
+        <Loader2 className="w-5 h-5 animate-spin text-sky-400" />
+        Loading the model backtest…
+      </div>
+    ),
+  }
+);
+
+type CountryTab = "us" | "japan" | "backtest";
 
 export default function FindTheSnowPage() {
   const [tab, setTab] = useState<CountryTab>("us");
   const [japanOpened, setJapanOpened] = useState(false);
+  const [backtestOpened, setBacktestOpened] = useState(false);
 
   const changeTab = (value: unknown) => {
-    const next = value === "japan" ? "japan" : "us";
+    const next: CountryTab =
+      value === "japan" ? "japan" : value === "backtest" ? "backtest" : "us";
     setTab(next);
     if (next === "japan") setJapanOpened(true);
+    if (next === "backtest") setBacktestOpened(true);
   };
 
   return (
@@ -54,6 +69,9 @@ export default function FindTheSnowPage() {
             <TabsTrigger value="japan" className="text-xs sm:text-sm px-3.5 rounded-lg">
               Japan (JMA)
             </TabsTrigger>
+            <TabsTrigger value="backtest" className="text-xs sm:text-sm px-3.5 rounded-lg">
+              Model Backtest
+            </TabsTrigger>
           </TabsList>
         </div>
       </header>
@@ -63,6 +81,9 @@ export default function FindTheSnowPage() {
       </TabsContent>
       <TabsContent value="japan" keepMounted>
         {japanOpened && <JapanDashboard />}
+      </TabsContent>
+      <TabsContent value="backtest" keepMounted>
+        {backtestOpened && <BacktestDashboard />}
       </TabsContent>
     </Tabs>
   );

@@ -9,7 +9,8 @@ import {
   YearRange,
 } from "@/types/snotel-range";
 import { isNum, mean, median, round } from "@/lib/snotel/stats";
-import { inRange, LOW_CONFIDENCE_WINTERS } from "@/lib/snotel/year-range";
+import { inRange } from "@/lib/snotel/year-range";
+import { summarizePctByPhase } from "@/lib/resorts/analysis";
 
 /** Sites whose typical peak SWE is under an inch have no meaningful % of median (same rule as the ingest). */
 const MIN_BASELINE_SWE = 1.0;
@@ -121,6 +122,13 @@ export function summarizeRegion(
     });
   }
 
+  const pctPhases = summarizePctByPhase(
+    years.map((y) => ({
+      year: y.waterYear,
+      phase: y.phase,
+      pcts: isNum(y.pctOfMedian) ? [y.pctOfMedian] : [],
+    }))
+  );
   const phases = phaseRecord<PhaseSignal>(() => ({
     pctOfMedian: null,
     winters: 0,
@@ -129,12 +137,11 @@ export function summarizeRegion(
   }));
   for (const phase of ENSO_PHASES) {
     const phaseYears = years.filter((y) => y.phase === phase);
-    const pcts = phaseYears.map((y) => y.pctOfMedian).filter(isNum);
     phases[phase] = {
-      pctOfMedian: round(median(pcts), 0),
-      winters: pcts.length,
+      pctOfMedian: pctPhases[phase].pctOfTypical,
+      winters: pctPhases[phase].winters,
       winterTavg: round(mean(phaseYears.map((y) => y.winterTavg).filter(isNum))),
-      lowConfidence: pcts.length < LOW_CONFIDENCE_WINTERS,
+      lowConfidence: pctPhases[phase].lowConfidence,
     };
   }
 

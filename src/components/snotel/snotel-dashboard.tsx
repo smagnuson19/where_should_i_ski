@@ -4,12 +4,16 @@ import React, { useMemo, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { EnsoPhase, SnotelStation } from "@/types/snotel";
 import { YearRange } from "@/types/snotel-range";
+import { SkiResort } from "@/types/resorts";
 import { useSnotelData } from "@/components/snotel/use-snotel-data";
 import { useRangeAnalysis } from "@/components/snotel/use-range-analysis";
+import { useUsResorts } from "@/components/resorts/use-resort-snowfall";
 import { PlainSummary } from "@/components/snotel/plain-summary";
 import { ViewControls } from "@/components/snotel/view-controls";
 import { EnsoMapPanel } from "@/components/snotel/enso-map-panel";
 import { StationList } from "@/components/snotel/station-list";
+import { ResortList } from "@/components/resorts/resort-list";
+import { ResortDetailModal } from "@/components/resorts/resort-detail-modal";
 import { RegionalDetails, REGION_DETAILS_ID } from "@/components/snotel/regional-details";
 import { StationHistoryModal } from "@/components/snotel/station-history-modal";
 import { GlossaryPanel, Term } from "@/components/snotel/glossary";
@@ -25,6 +29,10 @@ function matchesSearch(st: SnotelStation, q: string) {
   );
 }
 
+function matchesResort(r: SkiResort, q: string) {
+  return !q || r.name.toLowerCase().includes(q) || r.state.toLowerCase().includes(q);
+}
+
 export function SnotelDashboard() {
   const { data, failed } = useSnotelData();
   const [phase, setPhase] = useState<EnsoPhase>("el_nino");
@@ -32,10 +40,14 @@ export function SnotelDashboard() {
   const [elevBand, setElevBand] = useState("ALL");
   const [selectedRegion, setSelectedRegion] = useState("ALL");
   const [showSites, setShowSites] = useState(false);
+  const [showResorts, setShowResorts] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [resortSearch, setResortSearch] = useState("");
   const [elevOffsetFt, setElevOffsetFt] = useState(0);
   const [activeStation, setActiveStation] = useState<SnotelStation | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [activeResort, setActiveResort] = useState<SkiResort | null>(null);
+  const [resortModalOpen, setResortModalOpen] = useState(false);
 
   const firstYear = data?.core.earliestWaterYear ?? 1930;
   const lastYear = data?.core.latestWaterYear ?? 2026;
@@ -44,6 +56,7 @@ export function SnotelDashboard() {
     [customRange, firstYear, lastYear]
   );
   const analysis = useRangeAnalysis(data, range.start, range.end, elevBand, selectedRegion);
+  const { resorts, stats: resortStats } = useUsResorts(data?.core.ensoByWaterYear, range);
 
   const q = searchQuery.trim().toLowerCase();
   const mapSites = useMemo(
@@ -56,6 +69,15 @@ export function SnotelDashboard() {
   const listedSites = useMemo(
     () => mapSites.filter((st) => selectedRegion === "ALL" || st.region === selectedRegion),
     [mapSites, selectedRegion]
+  );
+  const rq = resortSearch.trim().toLowerCase();
+  const listedResorts = useMemo(
+    () =>
+      resorts.filter(
+        (r) =>
+          (selectedRegion === "ALL" || r.region === selectedRegion) && matchesResort(r, rq)
+      ),
+    [resorts, selectedRegion, rq]
   );
 
   if (!data) {
@@ -80,6 +102,10 @@ export function SnotelDashboard() {
   const openStation = (st: SnotelStation) => {
     setActiveStation(st);
     setModalOpen(true);
+  };
+  const openResort = (r: SkiResort) => {
+    setActiveResort(r);
+    setResortModalOpen(true);
   };
   const focusRegion = (regionId: string) => {
     setSelectedRegion(regionId);
@@ -142,6 +168,12 @@ export function SnotelDashboard() {
         onShowSitesChange={setShowSites}
         activeStation={modalOpen ? activeStation : null}
         onOpenStation={openStation}
+        resorts={resorts}
+        showResorts={showResorts}
+        onShowResortsChange={setShowResorts}
+        resortStats={resortStats}
+        activeResort={resortModalOpen ? activeResort : null}
+        onOpenResort={openResort}
       />
 
       {showSites && (
@@ -153,6 +185,19 @@ export function SnotelDashboard() {
           onSearchChange={setSearchQuery}
           scopeLabel={scopeLabel}
           onOpenStation={openStation}
+        />
+      )}
+
+      {showResorts && resorts.length > 0 && (
+        <ResortList
+          resorts={listedResorts}
+          stats={resortStats}
+          phase={phase}
+          searchQuery={resortSearch}
+          onSearchChange={setResortSearch}
+          scopeLabel={scopeLabel}
+          unit="in"
+          onOpenResort={openResort}
         />
       )}
 
@@ -173,7 +218,7 @@ export function SnotelDashboard() {
       />
 
       <GlossaryPanel />
-      <AboutData source={core.source} totalStations={core.totalStations} />
+      <AboutData source={core.source} totalStations={core.totalStations} resortCount={resorts.length || undefined} />
 
       <StationHistoryModal
         station={activeStation}
@@ -182,6 +227,15 @@ export function SnotelDashboard() {
         regions={core.regions}
         ensoByWaterYear={core.ensoByWaterYear}
         stationHistoryRows={activeStation ? data.histories.histories[activeStation.triplet] || null : null}
+      />
+
+      <ResortDetailModal
+        resort={activeResort}
+        stats={activeResort ? resortStats.get(activeResort.id) : undefined}
+        open={resortModalOpen}
+        onOpenChange={setResortModalOpen}
+        unit="in"
+        regionName={activeResort?.region ? core.regions[activeResort.region]?.shortName : null}
       />
     </div>
   );

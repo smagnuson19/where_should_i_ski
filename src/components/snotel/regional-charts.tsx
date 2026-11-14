@@ -75,19 +75,21 @@ export function RegionalCharts(props: RegionalChartsProps) {
       </Disclosure>
 
       <Disclosure
-        icon={<ThermometerSnowflake className="w-4 h-4 text-amber-400" />}
-        title="Temperature through the season"
-        summary={`Average monthly air temperature at the sites vs. the 32°F freezing line${seasonNote}.`}
-      >
-        <TempSeasonChart data={adjustedSeasonal} />
-      </Disclosure>
-
-      <Disclosure
+        defaultOpen
         icon={<CloudSnow className="w-4 h-4 text-purple-400" />}
         title="Snowfall days by region"
         summary="Days per winter with at least 2 in of new snow, from 28 benchmark sites with daily records."
       >
         <StormDaysChart storms={props.storms} regions={props.regions} />
+      </Disclosure>
+
+      <Disclosure
+        defaultOpen
+        icon={<ThermometerSnowflake className="w-4 h-4 text-amber-400" />}
+        title="Temperature through the season"
+        summary={`Average monthly air temperature at the sites vs. the 32°F freezing line${seasonNote}.`}
+      >
+        <TempSeasonChart data={adjustedSeasonal} />
       </Disclosure>
 
       <Disclosure

@@ -4,7 +4,15 @@ import React from "react";
 import { Database } from "lucide-react";
 import { Disclosure } from "@/components/snotel/disclosure";
 
-export function AboutData({ source, totalStations }: { source: string; totalStations: number }) {
+export function AboutData({
+  source,
+  totalStations,
+  resortCount,
+}: {
+  source: string;
+  totalStations: number;
+  resortCount?: number;
+}) {
   return (
     <Disclosure
       title="About the data and method"
@@ -34,6 +42,14 @@ export function AboutData({ source, totalStations }: { source: string; totalStat
           Map states are shaded with the region that holds most of their sites; states with fewer than 5 sites are left
           unshaded. Site dots show where each station actually sits.
         </li>
+        {resortCount != null && resortCount > 0 && (
+          <li>
+            Ski resorts ({resortCount} western US) come from OpenSkiData / OpenSkiMap.org (© OpenStreetMap contributors
+            ODbL, Skimap.org, Who&apos;s On First, © Mapterhorn). Resort markers use season snowfall from nearby NOAA
+            GHCN-Daily stations, or estimated snow-depth gains at SNOTEL sites when no GHCN record is nearby — not
+            snowpack (SWE). Stations often sit below the slopes; use the percentages more than the totals.
+          </li>
+        )}
       </ul>
     </Disclosure>
   );

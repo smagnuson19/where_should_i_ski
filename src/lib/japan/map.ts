@@ -1,6 +1,7 @@
-import { geoConicConformal, geoPath } from "d3-geo";
+import { geoContains, geoConicConformal, geoPath } from "d3-geo";
 import { feature, merge, mesh } from "topojson-client";
 import type { GeometryCollection, MultiPolygon, Polygon, Topology } from "topojson-specification";
+import type { Feature, Geometry } from "geojson";
 import areasTopology from "@/data/japan-forecast-areas.topo.json";
 
 export const MAP_WIDTH = 760;
@@ -104,4 +105,23 @@ export const REGION_OUTLINES: JapanRegionOutline[] = [...new Set(AREA_SHAPES.map
 
 export function projectLonLat(lon: number, lat: number): [number, number] | null {
   return projection([lon, lat]);
+}
+
+const AREA_FEATURES: Feature<Geometry, { code: string; regionId: string | null }>[] = feature(
+  topology,
+  topology.objects.areas
+).features.map((f) => ({
+  ...f,
+  properties: {
+    code: areaCode(f),
+    regionId: regionForArea(areaCode(f)),
+  },
+}));
+
+/** Assign a lon/lat to one of the eight Japan climate regions using forecast-area polygons. */
+export function japanRegionForLonLat(lon: number, lat: number): string | null {
+  for (const f of AREA_FEATURES) {
+    if (f.properties.regionId && geoContains(f, [lon, lat])) return f.properties.regionId;
+  }
+  return null;
 }

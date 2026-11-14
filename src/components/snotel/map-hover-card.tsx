@@ -102,3 +102,35 @@ export function StationHoverCard({ station, stats }: { station: SnotelStation; s
     </div>
   );
 }
+
+export function ResortHoverCard({
+  name,
+  state,
+  typicalSnow,
+  unit,
+  sourceLabel,
+  phaseValues,
+  className,
+}: {
+  name: string;
+  state: string;
+  typicalSnow: number | null | undefined;
+  unit: "in" | "cm";
+  sourceLabel: string;
+  phaseValues: Record<EnsoPhase, { pct: number | null; winters: number }>;
+  className?: string;
+}) {
+  return (
+    <div className={className ?? CARD}>
+      <div className="font-semibold text-white text-sm leading-tight">{name}</div>
+      <div className="text-[11px] text-slate-400 mt-0.5">
+        {state}
+        {typicalSnow != null ? ` · typical season ${typicalSnow} ${unit}` : ""} · {sourceLabel}
+      </div>
+      <PhaseRow values={phaseValues} />
+      <div className="mt-2 text-[11px] text-sky-400 flex items-center gap-1">
+        <MousePointerClick className="w-3 h-3" /> Click for this resort&apos;s snowfall history
+      </div>
+    </div>
+  );
+}
