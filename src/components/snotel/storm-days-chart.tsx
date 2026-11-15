@@ -25,14 +25,14 @@ export function StormDaysChart({ storms, regions }: StormDaysChartProps) {
     <div className="h-72 w-full">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} layout="vertical" margin={{ left: 20 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-          <XAxis type="number" stroke="#94a3b8" fontSize={11} unit=" d" />
-          <YAxis dataKey="region" type="category" stroke="#cbd5e1" fontSize={10} width={120} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e3d9c3" />
+          <XAxis type="number" stroke="#6f6d5c" fontSize={11} unit=" d" />
+          <YAxis dataKey="region" type="category" stroke="#434a3d" fontSize={10} width={120} />
           <Tooltip contentStyle={CHART_TOOLTIP_STYLE} formatter={(v) => `${v} days`} />
           <Legend wrapperStyle={{ fontSize: "11px" }} />
-          <Bar dataKey="elNino" name="El Niño" fill="#f97316" radius={[0, 3, 3, 0]} />
-          <Bar dataKey="laNina" name="La Niña" fill="#38bdf8" radius={[0, 3, 3, 0]} />
-          <Bar dataKey="all" name="All winters" fill="#94a3b8" radius={[0, 3, 3, 0]} />
+          <Bar dataKey="elNino" name="El Niño" fill="#ea580c" radius={[0, 3, 3, 0]} />
+          <Bar dataKey="laNina" name="La Niña" fill="#0284c7" radius={[0, 3, 3, 0]} />
+          <Bar dataKey="all" name="All winters" fill="#8b8774" radius={[0, 3, 3, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

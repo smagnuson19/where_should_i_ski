@@ -2,6 +2,7 @@
 
 import React from "react";
 import { AlertTriangle, CalendarRange, CloudSnow, History, MapPin, Mountain } from "lucide-react";
+import { TrailMark } from "@/components/trail/trail-mark";
 import { EnsoPhase } from "@/types/snotel";
 import { ENSO_PHASES, PhaseRecord, YearRange } from "@/types/snotel-range";
 import { StationData } from "@/types/japan-enso";
@@ -17,8 +18,8 @@ import { PHASE_LABEL, PHASE_STYLE, winterSpan } from "@/lib/snotel/year-range";
 
 export const JAPAN_REGION_DETAILS_ID = "japan-region-details";
 
-const CARD = "rounded-2xl border border-slate-800/90 bg-slate-900/60 p-4 space-y-1.5";
-const CARD_LABEL = "text-[11px] font-semibold uppercase tracking-wider text-slate-400";
+const CARD = "rounded-2xl border border-slate-200/90 bg-slate-50/60 p-4 space-y-1.5";
+const CARD_LABEL = "text-[11px] font-semibold uppercase tracking-wider text-slate-600";
 const fmt = (v: number | null | undefined, digits = 1) => (v === null || v === undefined ? "–" : v.toFixed(digits));
 
 interface JapanRegionDetailsProps {
@@ -53,11 +54,12 @@ export function JapanRegionDetails(props: JapanRegionDetailsProps) {
   return (
     <section id={JAPAN_REGION_DETAILS_ID} className="space-y-4 scroll-mt-20 pt-2">
       <div>
-        <h2 className="text-base sm:text-lg font-bold tracking-tight text-white">
+        <h2 className="text-base sm:text-lg font-bold tracking-tight text-slate-950">
+          <TrailMark level="advanced" className="mr-2.5 align-middle" />
           Region Deep Dive: {info.name}{" "}
-          <span className="text-sm font-normal text-slate-400">{props.nameJa[selectedRegion]}</span>
+          <span className="text-sm font-normal text-slate-600">{props.nameJa[selectedRegion]}</span>
         </h2>
-        <p className="text-xs text-slate-400 mt-0.5">
+        <p className="text-xs text-slate-600 mt-0.5">
           {winterSpan(props.range)}. Includes {info.places}. Choose a region below or click one on the map.
         </p>
       </div>
@@ -72,8 +74,8 @@ export function JapanRegionDetails(props: JapanRegionDetailsProps) {
               onClick={() => props.onSelectRegion(r.id)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition ${
                 active
-                  ? "bg-sky-500/20 text-sky-200 border-sky-500/50 shadow-xs"
-                  : "bg-slate-900/80 text-slate-300 border-slate-800 hover:bg-slate-800 hover:text-white"
+                  ? "bg-pine-500/20 text-pine-800 border-pine-500/50 shadow-xs"
+                  : "bg-slate-50/80 text-slate-700 border-slate-200 hover:bg-slate-200 hover:text-slate-950"
               }`}
             >
               {r.shortName}
@@ -87,7 +89,7 @@ export function JapanRegionDetails(props: JapanRegionDetailsProps) {
       <div className="space-y-3">
         <Disclosure
           defaultOpen
-          icon={<CalendarRange className="w-4 h-4 text-sky-400" />}
+          icon={<CalendarRange className="w-4 h-4 text-pine-600" />}
           title={`When the snow falls: ${info.shortName}`}
           summary="Average snowfall each month, Nov–Mar, by ENSO phase."
         >
@@ -95,7 +97,7 @@ export function JapanRegionDetails(props: JapanRegionDetailsProps) {
         </Disclosure>
 
         <Disclosure
-          icon={<History className="w-4 h-4 text-indigo-400" />}
+          icon={<History className="w-4 h-4 text-indigo-600" />}
           title="Winter-by-winter history"
           summary="Each bar is one winter's snowfall as % of typical, colored by ENSO phase, with the Dec–Feb temperature line."
         >
@@ -103,7 +105,7 @@ export function JapanRegionDetails(props: JapanRegionDetailsProps) {
         </Disclosure>
 
         <Disclosure
-          icon={<CloudSnow className="w-4 h-4 text-purple-400" />}
+          icon={<CloudSnow className="w-4 h-4 text-purple-600" />}
           title="Snow days and big storms"
           summary="How often it snows, and how big the biggest day gets, in each phase."
         >
@@ -112,7 +114,7 @@ export function JapanRegionDetails(props: JapanRegionDetailsProps) {
 
         {topResorts.length > 0 && (
           <Disclosure
-            icon={<Mountain className="w-4 h-4 text-sky-400" />}
+            icon={<Mountain className="w-4 h-4 text-pine-600" />}
             title={`Ski resorts: ${info.shortName} (${props.resorts?.length ?? 0})`}
             summary={`Top resorts by season snowfall in ${PHASE_LABEL[phase]} winters vs. typical.`}
             defaultOpen
@@ -126,19 +128,19 @@ export function JapanRegionDetails(props: JapanRegionDetailsProps) {
                     key={r.id}
                     type="button"
                     onClick={() => props.onOpenResort?.(r)}
-                    className="text-left rounded-lg border border-slate-800/90 bg-slate-950/70 hover:bg-slate-800/80 hover:border-sky-500/50 p-2.5 transition"
+                    className="text-left rounded-lg border border-slate-200/90 bg-slate-100/70 hover:bg-slate-200/80 hover:border-pine-500/50 p-2.5 transition"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-semibold text-xs text-white truncate">
+                      <span className="font-semibold text-xs text-slate-950 truncate">
                         {r.name}
-                        {r.nameJa ? <span className="font-normal text-slate-400"> · {r.nameJa}</span> : null}
+                        {r.nameJa ? <span className="font-normal text-slate-600"> · {r.nameJa}</span> : null}
                       </span>
-                      <span className="text-xs font-mono font-semibold flex items-center gap-1.5 text-white">
+                      <span className="text-xs font-mono font-semibold flex items-center gap-1.5 text-slate-950">
                         <span className="w-2 h-2 rotate-45" style={{ backgroundColor: pctColor(pct) }} />
                         {formatPct(pct)}
                       </span>
                     </div>
-                    <div className="text-[11px] text-slate-400 mt-0.5">
+                    <div className="text-[11px] text-slate-600 mt-0.5">
                       {r.verticalM.toLocaleString()} m vert
                       {s?.typicalSnow != null ? ` · typical ${s.typicalSnow} cm` : ""}
                     </div>
@@ -150,7 +152,7 @@ export function JapanRegionDetails(props: JapanRegionDetailsProps) {
         )}
 
         <Disclosure
-          icon={<MapPin className="w-4 h-4 text-emerald-400" />}
+          icon={<MapPin className="w-4 h-4 text-emerald-600" />}
           title={`Weather stations: ${info.shortName} (${regionStations.length})`}
           summary="The JMA stations averaged into this region, with their median winter in each phase."
         >
@@ -172,11 +174,11 @@ function KpiCards({ summary }: { summary: JapanRegionSummary }) {
         <div className={CARD_LABEL}>
           Typical <GlossaryTerm entry={JAPAN_GLOSSARY.seasonSnowfall}>Season Snowfall</GlossaryTerm>
         </div>
-        <div className="text-2xl font-bold font-mono tracking-tight text-white">
+        <div className="text-2xl font-bold font-mono tracking-tight text-slate-950">
           {summary.typicalCm !== null ? `${summary.typicalCm.toLocaleString()} cm` : "–"}
         </div>
-        <div className="text-xs text-slate-400">
-          Median winter · <span className="font-mono text-slate-300">{summary.stationCount}</span> stations
+        <div className="text-xs text-slate-600">
+          Median winter · <span className="font-mono text-slate-700">{summary.stationCount}</span> stations
         </div>
       </div>
 
@@ -186,15 +188,15 @@ function KpiCards({ summary }: { summary: JapanRegionSummary }) {
         </div>
         <div className="grid grid-cols-3 gap-2 pt-0.5">
           {ENSO_PHASES.map((p) => (
-            <div key={p} className="rounded-lg bg-slate-950/60 border border-slate-800/70 px-2 py-1">
+            <div key={p} className="rounded-lg bg-slate-100/60 border border-slate-200/70 px-2 py-1">
               <div className={`text-[10px] font-semibold ${PHASE_STYLE[p].text}`}>{PHASE_LABEL[p]}</div>
-              <div className="text-sm sm:text-base font-bold font-mono text-white flex items-center gap-1">
+              <div className="text-sm sm:text-base font-bold font-mono text-slate-950 flex items-center gap-1">
                 {formatPct(summary.phases[p].pctOfTypical)}
                 {summary.phases[p].lowConfidence && (
-                  <AlertTriangle className="w-3 h-3 text-amber-400" aria-label="low confidence" />
+                  <AlertTriangle className="w-3 h-3 text-amber-600" aria-label="low confidence" />
                 )}
               </div>
-              <div className="text-[10px] font-mono text-slate-400">n={summary.phases[p].winters}</div>
+              <div className="text-[10px] font-mono text-slate-600">n={summary.phases[p].winters}</div>
             </div>
           ))}
         </div>
@@ -202,8 +204,8 @@ function KpiCards({ summary }: { summary: JapanRegionSummary }) {
 
       <div className={CARD}>
         <div className={CARD_LABEL}>Winter Temp (Dec–Feb Mean)</div>
-        <div className="text-2xl font-bold font-mono tracking-tight text-emerald-300">{fmt(summary.tempDjfC)}°C</div>
-        <div className="text-xs text-slate-400">
+        <div className="text-2xl font-bold font-mono tracking-tight text-emerald-700">{fmt(summary.tempDjfC)}°C</div>
+        <div className="text-xs text-slate-600">
           {tempGap === null
             ? "Not enough temperature data"
             : `El Niño runs ${Math.abs(tempGap).toFixed(1)}°C ${tempGap >= 0 ? "warmer" : "colder"} than La Niña`}
@@ -212,12 +214,12 @@ function KpiCards({ summary }: { summary: JapanRegionSummary }) {
 
       <div className={CARD}>
         <div className={CARD_LABEL}>Big Snow Days (20 cm+)</div>
-        <div className="text-2xl font-bold font-mono tracking-tight text-sky-300">
-          {fmt(summary.bigSnowDays20cm)} <span className="text-sm font-sans font-medium text-slate-300">per winter</span>
+        <div className="text-2xl font-bold font-mono tracking-tight text-sky-700">
+          {fmt(summary.bigSnowDays20cm)} <span className="text-sm font-sans font-medium text-slate-700">per winter</span>
         </div>
-        <div className="text-xs text-slate-400">
-          El Niño <span className="font-mono text-slate-200">{fmt(en.bigSnowDays20cm)}</span> · La Niña{" "}
-          <span className="font-mono text-slate-200">{fmt(ln.bigSnowDays20cm)}</span> days
+        <div className="text-xs text-slate-600">
+          El Niño <span className="font-mono text-slate-800">{fmt(en.bigSnowDays20cm)}</span> · La Niña{" "}
+          <span className="font-mono text-slate-800">{fmt(ln.bigSnowDays20cm)}</span> days
         </div>
       </div>
     </section>
@@ -249,17 +251,17 @@ function StormTable({ phases }: { phases: PhaseRecord<JapanPhaseSignal> }) {
     <div className="overflow-x-auto">
       <table className="w-full text-xs">
         <thead>
-          <tr className="border-b border-slate-800 text-slate-300">
+          <tr className="border-b border-slate-200 text-slate-700">
             <th className="px-2.5 py-2 text-left font-semibold">Per winter, averaged over the region&apos;s stations</th>
             <PhaseHeaders />
           </tr>
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.label} className="border-b border-slate-800/60 last:border-0">
-              <td className="px-2.5 py-2 text-slate-300">{row.label}</td>
+            <tr key={row.label} className="border-b border-slate-200/60 last:border-0">
+              <td className="px-2.5 py-2 text-slate-700">{row.label}</td>
               {ENSO_PHASES.map((p) => (
-                <td key={p} className={`${TD} text-slate-100`}>
+                <td key={p} className={`${TD} text-slate-900`}>
                   {row.value(phases[p])}
                 </td>
               ))}
@@ -277,7 +279,7 @@ function StationTable({ stations }: { stations: StationData[] }) {
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-slate-800 text-slate-300">
+            <tr className="border-b border-slate-200 text-slate-700">
               <th className="px-2.5 py-2 text-left font-semibold">Station</th>
               <th className={TH}>Elevation</th>
               <th className={TH}>1991–2020 avg</th>
@@ -286,14 +288,14 @@ function StationTable({ stations }: { stations: StationData[] }) {
           </thead>
           <tbody>
             {stations.map((s) => (
-              <tr key={s.station_id} className="border-b border-slate-800/60 last:border-0">
-                <td className="px-2.5 py-2 text-slate-100 font-medium">
-                  {s.name_en} <span className="text-slate-400 font-normal">{s.name_ja}</span>
+              <tr key={s.station_id} className="border-b border-slate-200/60 last:border-0">
+                <td className="px-2.5 py-2 text-slate-900 font-medium">
+                  {s.name_en} <span className="text-slate-600 font-normal">{s.name_ja}</span>
                 </td>
-                <td className={`${TD} text-slate-400`}>{Math.round(s.elevation_m).toLocaleString()} m</td>
-                <td className={`${TD} text-slate-200`}>{Math.round(s.normals_1991_2020.snow_1991_2020_cm).toLocaleString()} cm</td>
+                <td className={`${TD} text-slate-600`}>{Math.round(s.elevation_m).toLocaleString()} m</td>
+                <td className={`${TD} text-slate-800`}>{Math.round(s.normals_1991_2020.snow_1991_2020_cm).toLocaleString()} cm</td>
                 {ENSO_PHASES.map((p) => (
-                  <td key={p} className={`${TD} text-slate-100`}>
+                  <td key={p} className={`${TD} text-slate-900`}>
                     {Math.round(s.phases[TO_JMA_PHASE[p]].snowfall_cm.median).toLocaleString()} cm
                   </td>
                 ))}

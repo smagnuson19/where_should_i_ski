@@ -10,10 +10,10 @@ export function PctScale() {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
       {PCT_BINS.map((b) => (
-        <div key={b.label} className="rounded-lg bg-slate-950/60 border border-slate-800/80 p-2">
+        <div key={b.label} className="rounded-lg bg-slate-100/60 border border-slate-200/80 p-2">
           <div className="h-2 rounded-full" style={{ backgroundColor: b.color }} />
-          <div className="mt-1.5 font-mono text-[11px] font-semibold text-slate-100">{b.label}</div>
-          <div className="text-[11px] text-slate-400 leading-snug">{b.meaning}</div>
+          <div className="mt-1.5 font-mono text-[11px] font-semibold text-slate-900">{b.label}</div>
+          <div className="text-[11px] text-slate-600 leading-snug">{b.meaning}</div>
         </div>
       ))}
     </div>
@@ -23,7 +23,7 @@ export function PctScale() {
 export function LegendSwatch({ color, children }: { color: string; children: React.ReactNode }) {
   return (
     <span className="inline-flex items-center gap-1.5">
-      <span className="w-3 h-3 rounded-sm border border-slate-700" style={{ backgroundColor: color }} />
+      <span className="w-3 h-3 rounded-sm border border-slate-300" style={{ backgroundColor: color }} />
       {children}
     </span>
   );
@@ -39,11 +39,11 @@ export function MapLegend({
   showResorts?: boolean;
 }) {
   return (
-    <div className="space-y-2.5 pt-1 text-xs text-slate-300">
-      <div className="text-slate-400 leading-relaxed">
+    <div className="space-y-2.5 pt-1 text-xs text-slate-700">
+      <div className="text-slate-600 leading-relaxed">
         Shading shows median <Term k="peakSwe">peak snowpack</Term> in{" "}
-        <strong className="font-semibold text-slate-200">{PHASE_LABEL[phase]}</strong> winters as{" "}
-        <Term k="pctMedian">% of median</Term> (<span className="font-mono text-slate-200">100%</span> = typical
+        <strong className="font-semibold text-slate-800">{PHASE_LABEL[phase]}</strong> winters as{" "}
+        <Term k="pctMedian">% of median</Term> (<span className="font-mono text-slate-800">100%</span> = typical
         winter).
         {showSites ? " Station dots use the same snowpack scale." : ""}
         {showResorts ? (
@@ -54,12 +54,12 @@ export function MapLegend({
         ) : null}
       </div>
       <PctScale />
-      <div className="flex flex-wrap gap-4 text-[11px] text-slate-400">
+      <div className="flex flex-wrap gap-4 text-[11px] text-slate-600">
         <LegendSwatch color={NO_DATA_COLOR}>No sites in this elevation band</LegendSwatch>
         <LegendSwatch color={OUTSIDE_NETWORK_COLOR}>Outside the SNOTEL network</LegendSwatch>
         {showResorts && (
           <span className="inline-flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rotate-45 border border-slate-500 bg-sky-400" />
+            <span className="w-2.5 h-2.5 rotate-45 border border-slate-500 bg-pine-600" />
             Ski resort (season snowfall)
           </span>
         )}

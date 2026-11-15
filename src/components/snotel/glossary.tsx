@@ -17,13 +17,13 @@ export function GlossaryTerm({ entry, children }: { entry: GlossaryEntry; childr
     <Tooltip>
       <TooltipTrigger
         render={<span tabIndex={0} />}
-        className="border-b border-dotted border-slate-500/70 hover:border-sky-400 hover:text-sky-200 transition-colors cursor-help"
+        className="border-b border-dotted border-slate-500/70 hover:border-pine-600 hover:text-pine-800 transition-colors cursor-help"
       >
         {children ?? entry.term}
       </TooltipTrigger>
       <TooltipContent className="max-w-xs leading-relaxed">
         <span>
-          <strong className="text-sky-300">{entry.term}:</strong> {entry.definition}
+          <strong className="text-pine-700">{entry.term}:</strong> {entry.definition}
         </span>
       </TooltipContent>
     </Tooltip>
@@ -42,12 +42,12 @@ export function GlossaryPanel({
   summary?: string;
 }) {
   return (
-    <Disclosure title="Glossary" summary={summary} icon={<BookOpen className="w-4 h-4 text-sky-400" />}>
+    <Disclosure title="Glossary" summary={summary} icon={<BookOpen className="w-4 h-4 text-pine-600" />}>
       <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-xs">
         {entries.map((g) => (
           <div key={g.term}>
-            <dt className="font-semibold text-slate-100">{g.term}</dt>
-            <dd className="text-slate-400 leading-relaxed mt-0.5">{g.definition}</dd>
+            <dt className="font-semibold text-slate-900">{g.term}</dt>
+            <dd className="text-slate-600 leading-relaxed mt-0.5">{g.definition}</dd>
           </div>
         ))}
       </dl>

@@ -59,7 +59,7 @@ export function RegionalCharts(props: RegionalChartsProps) {
     <div className="space-y-3">
       <Disclosure
         defaultOpen
-        icon={<TrendingUp className="w-4 h-4 text-sky-400" />}
+        icon={<TrendingUp className="w-4 h-4 text-pine-600" />}
         title={`How the snowpack builds and melts: ${props.regionName}`}
         summary={`Monthly snowpack (average site SWE), Oct–Sep, by ENSO phase${seasonNote}.`}
       >
@@ -67,7 +67,7 @@ export function RegionalCharts(props: RegionalChartsProps) {
       </Disclosure>
 
       <Disclosure
-        icon={<History className="w-4 h-4 text-indigo-400" />}
+        icon={<History className="w-4 h-4 text-indigo-600" />}
         title="Winter-by-winter history"
         summary="Each bar is one winter's peak snowpack as % of median, colored by ENSO phase, with the Nov–Mar temperature line."
       >
@@ -76,7 +76,7 @@ export function RegionalCharts(props: RegionalChartsProps) {
 
       <Disclosure
         defaultOpen
-        icon={<CloudSnow className="w-4 h-4 text-purple-400" />}
+        icon={<CloudSnow className="w-4 h-4 text-purple-600" />}
         title="Snowfall days by region"
         summary="Days per winter with at least 2 in of new snow, from 28 benchmark sites with daily records."
       >
@@ -85,7 +85,7 @@ export function RegionalCharts(props: RegionalChartsProps) {
 
       <Disclosure
         defaultOpen
-        icon={<ThermometerSnowflake className="w-4 h-4 text-amber-400" />}
+        icon={<ThermometerSnowflake className="w-4 h-4 text-amber-600" />}
         title="Temperature through the season"
         summary={`Average monthly air temperature at the sites vs. the 32°F freezing line${seasonNote}.`}
       >
@@ -93,7 +93,7 @@ export function RegionalCharts(props: RegionalChartsProps) {
       </Disclosure>
 
       <Disclosure
-        icon={<Layers className="w-4 h-4 text-emerald-400" />}
+        icon={<Layers className="w-4 h-4 text-emerald-600" />}
         title={`Compare elevation bands: ${props.regionName}`}
         summary="Does the ENSO signal change with elevation? Winters counted per phase in parentheses."
       >

@@ -235,27 +235,27 @@ export function StationHistoryModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[calc(100%-2rem)] sm:max-w-5xl max-h-[90vh] overflow-y-auto bg-slate-950 border-slate-800 text-slate-100">
+      <DialogContent className="w-[calc(100%-2rem)] sm:max-w-5xl max-h-[90vh] overflow-y-auto bg-slate-100 border-slate-200 text-slate-900">
         <DialogHeader>
           <div className="flex flex-wrap items-center justify-between gap-2 pr-6">
             <div>
-              <DialogTitle className="text-xl font-bold text-white flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-sky-400" />
+              <DialogTitle className="text-xl font-bold text-slate-950 flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-pine-600" />
                 <span>{station.name}</span>
-                <Badge variant="outline" className="border-slate-700 text-slate-300 font-mono">
+                <Badge variant="outline" className="border-slate-300 text-slate-700 font-mono">
                   {station.triplet}
                 </Badge>
               </DialogTitle>
-              <DialogDescription className="text-slate-400 mt-1">
+              <DialogDescription className="text-slate-600 mt-1">
                 {regInfo?.name || station.region} • {station.county} County, {station.state} •{" "}
                 Lat {station.lat}°, Lon {station.lon}° • Record:{" "}
-                <strong className="text-slate-200">
+                <strong className="text-slate-800">
                   {station.earliestYear}–{station.latestYear} ({station.yearsCount} Water Years)
                 </strong>
               </DialogDescription>
             </div>
             <div className="flex items-center gap-2">
-              <Badge className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 px-2.5 py-1">
+              <Badge className="bg-indigo-500/20 text-indigo-700 border border-indigo-500/40 px-2.5 py-1">
                 <Mountain className="w-3.5 h-3.5 mr-1" />
                 Gauge Elev: {station.elevation.toLocaleString()} ft
               </Badge>
@@ -264,15 +264,15 @@ export function StationHistoryModal({
         </DialogHeader>
 
         {/* Interactive Elevation & Lapse-Rate Adjuster for this SNOTEL site */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-3.5 mt-1">
+        <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 mt-1">
           <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
-            <div className="text-xs font-semibold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
+            <div className="text-xs font-semibold uppercase tracking-wider text-pine-600 flex items-center gap-1.5">
               <Mountain className="w-4 h-4" />
               <span>Site Elevation & Orographic Lapse-Rate Adjuster</span>
             </div>
             <div className="flex items-center gap-2 text-xs">
-              <span className="text-slate-400">Simulated Target Elevation:</span>
-              <span className="font-mono font-bold text-white bg-slate-800 px-2 py-0.5 rounded">
+              <span className="text-slate-600">Simulated Target Elevation:</span>
+              <span className="font-mono font-bold text-slate-950 bg-slate-200 px-2 py-0.5 rounded">
                 {targetElev.toLocaleString()} ft (
                 {elevDeltaThousands >= 0 ? "+" : ""}
                 {Math.round(elevDeltaThousands * 1000).toLocaleString()} ft vs gauge)
@@ -280,7 +280,7 @@ export function StationHistoryModal({
               {targetElev !== station.elevation && (
                 <button
                   onClick={() => setTargetElev(station.elevation)}
-                  className="text-sky-400 hover:underline text-[11px]"
+                  className="text-pine-600 hover:underline text-[11px]"
                 >
                   Reset to {station.elevation.toLocaleString()} ft
                 </button>
@@ -290,9 +290,9 @@ export function StationHistoryModal({
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
             <div className="min-w-0">
-              <div className="flex justify-between gap-2 text-[11px] text-slate-300 mb-1.5">
+              <div className="flex justify-between gap-2 text-[11px] text-slate-700 mb-1.5">
                 <span>Target Elevation (3,000 – 12,500 ft)</span>
-                <span className="shrink-0 whitespace-nowrap font-mono text-sky-300">{targetElev.toLocaleString()} ft</span>
+                <span className="shrink-0 whitespace-nowrap font-mono text-pine-700">{targetElev.toLocaleString()} ft</span>
               </div>
               <Slider
                 value={[targetElev]}
@@ -304,9 +304,9 @@ export function StationHistoryModal({
             </div>
 
             <div className="min-w-0">
-              <div className="flex justify-between gap-2 text-[11px] text-slate-300 mb-1.5">
+              <div className="flex justify-between gap-2 text-[11px] text-slate-700 mb-1.5">
                 <span>Temp Lapse Rate (°F / 1,000 ft)</span>
-                <span className="shrink-0 whitespace-nowrap font-mono text-amber-300">
+                <span className="shrink-0 whitespace-nowrap font-mono text-amber-700">
                   -{lapseRateTemp.toFixed(1)}°F/kft ({tempAdjustmentF >= 0 ? "+" : ""}
                   {tempAdjustmentF.toFixed(1)}°F)
                 </span>
@@ -321,9 +321,9 @@ export function StationHistoryModal({
             </div>
 
             <div className="min-w-0">
-              <div className="flex justify-between gap-2 text-[11px] text-slate-300 mb-1.5">
+              <div className="flex justify-between gap-2 text-[11px] text-slate-700 mb-1.5">
                 <span>Orographic SWE Gradient (% / 1,000 ft)</span>
-                <span className="shrink-0 whitespace-nowrap font-mono text-emerald-300">
+                <span className="shrink-0 whitespace-nowrap font-mono text-emerald-700">
                   +{orographicSwePct}%/kft (×{sweMultiplier.toFixed(2)})
                 </span>
               </div>
@@ -340,12 +340,12 @@ export function StationHistoryModal({
 
         {/* Summary KPI Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-          <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-3">
-            <div className="text-[11px] text-slate-400">Historical Median Peak SWE</div>
-            <div className="text-lg font-bold text-white mt-0.5">
+          <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-3">
+            <div className="text-[11px] text-slate-600">Historical Median Peak SWE</div>
+            <div className="text-lg font-bold text-slate-950 mt-0.5">
               {(station.medianPeakSwe * sweMultiplier).toFixed(1)} in
             </div>
-            <div className="text-[11px] text-slate-400">
+            <div className="text-[11px] text-slate-600">
               Peak Depth:{" "}
               {station.medianPeakSnwd
                 ? `${(station.medianPeakSnwd * sweMultiplier).toFixed(0)} in`
@@ -353,34 +353,34 @@ export function StationHistoryModal({
             </div>
           </div>
 
-          <div className="rounded-lg border border-orange-500/30 bg-orange-950/20 p-3">
-            <div className="text-[11px] text-orange-300">El Niño Median Peak SWE</div>
-            <div className="text-lg font-bold text-orange-400 mt-0.5">
+          <div className="rounded-lg border border-orange-500/30 bg-orange-50/20 p-3">
+            <div className="text-[11px] text-orange-700">El Niño Median Peak SWE</div>
+            <div className="text-lg font-bold text-orange-600 mt-0.5">
               {(station.elNinoPeakSwe * sweMultiplier).toFixed(1)} in
             </div>
-            <div className="text-[11px] text-orange-300/80">
+            <div className="text-[11px] text-orange-700/80">
               {station.elNinoPctMedian}% of All-Year Median
             </div>
           </div>
 
-          <div className="rounded-lg border border-sky-500/30 bg-sky-950/20 p-3">
-            <div className="text-[11px] text-sky-300">La Niña Median Peak SWE</div>
-            <div className="text-lg font-bold text-sky-400 mt-0.5">
+          <div className="rounded-lg border border-sky-500/30 bg-sky-50/20 p-3">
+            <div className="text-[11px] text-sky-700">La Niña Median Peak SWE</div>
+            <div className="text-lg font-bold text-sky-600 mt-0.5">
               {(station.laNinaPeakSwe * sweMultiplier).toFixed(1)} in
             </div>
-            <div className="text-[11px] text-sky-300/80">
+            <div className="text-[11px] text-sky-700/80">
               {station.laNinaPctMedian}% of All-Year Median
             </div>
           </div>
 
-          <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-3">
-            <div className="text-[11px] text-slate-400">Nov–Mar Mean Winter Temp</div>
-            <div className="text-lg font-bold text-emerald-400 mt-0.5">
+          <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-3">
+            <div className="text-[11px] text-slate-600">Nov–Mar Mean Winter Temp</div>
+            <div className="text-lg font-bold text-emerald-600 mt-0.5">
               {station.winterTavg !== null
                 ? `${(station.winterTavg + tempAdjustmentF).toFixed(1)}°F`
                 : "N/A"}
             </div>
-            <div className="text-[11px] text-slate-400">
+            <div className="text-[11px] text-slate-600">
               EN:{" "}
               {station.elNinoWinterTavg !== null
                 ? `${(station.elNinoWinterTavg + tempAdjustmentF).toFixed(1)}°F`
@@ -395,7 +395,7 @@ export function StationHistoryModal({
 
         {/* Detailed Historical Tabs */}
         <Tabs defaultValue="seasonal" className="w-full mt-1">
-          <TabsList className="bg-slate-900 border border-slate-800 w-full justify-start flex-wrap h-auto p-1">
+          <TabsList className="bg-slate-50 border border-slate-200 w-full justify-start flex-wrap h-auto p-1">
             <TabsTrigger value="seasonal" className="text-xs">
               <TrendingUp className="w-3.5 h-3.5 mr-1.5" />
               Seasonal ENSO Curves (Oct–Sep)
@@ -413,24 +413,24 @@ export function StationHistoryModal({
           {/* Tab 1: Seasonal Water-Year Curve */}
           <TabsContent value="seasonal" className="space-y-4 mt-3">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
-                <h4 className="text-xs font-semibold text-slate-200 mb-1">
+              <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
+                <h4 className="text-xs font-semibold text-slate-800 mb-1">
                   Snow Water Equivalent (SWE, inches) — El Niño vs. La Niña vs. Historical Median
                 </h4>
-                <p className="text-[11px] text-slate-400 mb-3">
+                <p className="text-[11px] text-slate-600 mb-3">
                   Monthly water-year snowpack accumulation and melt trajectory adjusted to{" "}
                   {targetElev.toLocaleString()} ft.
                 </p>
                 <div className="h-64 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={seasonalChartData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                      <XAxis dataKey="monthLabel" stroke="#94a3b8" fontSize={11} />
-                      <YAxis stroke="#94a3b8" fontSize={11} unit='"' />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e3d9c3" />
+                      <XAxis dataKey="monthLabel" stroke="#6f6d5c" fontSize={11} />
+                      <YAxis stroke="#6f6d5c" fontSize={11} unit='"' />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: "#0f172a",
-                          borderColor: "#334155",
+                          backgroundColor: "#fbf8f0",
+                          borderColor: "#d4c7aa",
                           fontSize: "12px",
                         }}
                       />
@@ -439,7 +439,7 @@ export function StationHistoryModal({
                         type="monotone"
                         dataKey="sweMedian"
                         name="Historical Median"
-                        stroke="#e2e8f0"
+                        stroke="#5a604f"
                         strokeWidth={2.5}
                         strokeDasharray="5 3"
                         dot={{ r: 3 }}
@@ -448,7 +448,7 @@ export function StationHistoryModal({
                         type="monotone"
                         dataKey="sweElNino"
                         name="El Niño Median"
-                        stroke="#f97316"
+                        stroke="#ea580c"
                         strokeWidth={2.5}
                         dot={{ r: 3 }}
                       />
@@ -456,7 +456,7 @@ export function StationHistoryModal({
                         type="monotone"
                         dataKey="sweLaNina"
                         name="La Niña Median"
-                        stroke="#38bdf8"
+                        stroke="#0284c7"
                         strokeWidth={2.5}
                         dot={{ r: 3 }}
                       />
@@ -464,7 +464,7 @@ export function StationHistoryModal({
                         type="monotone"
                         dataKey="sweNeutral"
                         name="ENSO Neutral"
-                        stroke="#a855f7"
+                        stroke="#9333ea"
                         strokeWidth={1.8}
                         dot={false}
                       />
@@ -473,35 +473,35 @@ export function StationHistoryModal({
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
-                <h4 className="text-xs font-semibold text-slate-200 mb-1 flex items-center gap-1.5">
-                  <ThermometerSnowflake className="w-3.5 h-3.5 text-sky-400" />
+              <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
+                <h4 className="text-xs font-semibold text-slate-800 mb-1 flex items-center gap-1.5">
+                  <ThermometerSnowflake className="w-3.5 h-3.5 text-pine-600" />
                   <span>Monthly Mean Temperature (°F) & Freezing Threshold (32°F)</span>
                 </h4>
-                <p className="text-[11px] text-slate-400 mb-3">
+                <p className="text-[11px] text-slate-600 mb-3">
                   Shows how elevation lapse-rate shifts the sub-freezing accumulation window across ENSO phases.
                 </p>
                 <div className="h-64 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart data={seasonalChartData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                      <XAxis dataKey="monthLabel" stroke="#94a3b8" fontSize={11} />
-                      <YAxis stroke="#94a3b8" fontSize={11} unit="°F" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e3d9c3" />
+                      <XAxis dataKey="monthLabel" stroke="#6f6d5c" fontSize={11} />
+                      <YAxis stroke="#6f6d5c" fontSize={11} unit="°F" />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: "#0f172a",
-                          borderColor: "#334155",
+                          backgroundColor: "#fbf8f0",
+                          borderColor: "#d4c7aa",
                           fontSize: "12px",
                         }}
                       />
                       <Legend wrapperStyle={{ fontSize: "11px" }} />
                       <ReferenceLine
                         y={32}
-                        stroke="#ef4444"
+                        stroke="#dc2626"
                         strokeDasharray="4 4"
                         label={{
                           value: "32°F Freezing",
-                          fill: "#f87171",
+                          fill: "#b91c1c",
                           fontSize: 10,
                           position: "insideTopRight",
                         }}
@@ -510,7 +510,7 @@ export function StationHistoryModal({
                         type="monotone"
                         dataKey="tavgMedian"
                         name="Historical Mean Temp"
-                        stroke="#e2e8f0"
+                        stroke="#5a604f"
                         strokeWidth={2}
                         strokeDasharray="4 3"
                       />
@@ -518,14 +518,14 @@ export function StationHistoryModal({
                         type="monotone"
                         dataKey="tavgElNino"
                         name="El Niño Temp (°F)"
-                        stroke="#f97316"
+                        stroke="#ea580c"
                         strokeWidth={2}
                       />
                       <Line
                         type="monotone"
                         dataKey="tavgLaNina"
                         name="La Niña Temp (°F)"
-                        stroke="#38bdf8"
+                        stroke="#0284c7"
                         strokeWidth={2}
                       />
                     </ComposedChart>
@@ -537,13 +537,13 @@ export function StationHistoryModal({
 
           {/* Tab 2: Full Period-of-Record Water Years */}
           <TabsContent value="por" className="space-y-4 mt-3">
-            <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+            <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                 <div>
-                  <h4 className="text-xs font-semibold text-slate-200">
+                  <h4 className="text-xs font-semibold text-slate-800">
                     Complete Historical Water-Year Peak SWE ({station.earliestYear}–{station.latestYear}) by ENSO Phase
                   </h4>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-slate-600">
                     Every recorded water year colored by NOAA ONI classification (El Niño = Orange, La Niña = Cyan, Neutral = Purple) against the historical median line.
                   </p>
                 </div>
@@ -551,25 +551,25 @@ export function StationHistoryModal({
               <div className="h-72 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <ComposedChart data={parsedHistory}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                    <XAxis dataKey="wy" stroke="#94a3b8" fontSize={11} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e3d9c3" />
+                    <XAxis dataKey="wy" stroke="#6f6d5c" fontSize={11} />
                     <YAxis
                       yAxisId="left"
-                      stroke="#94a3b8"
+                      stroke="#6f6d5c"
                       fontSize={11}
                       unit='"'
                     />
                     <YAxis
                       yAxisId="right"
                       orientation="right"
-                      stroke="#10b981"
+                      stroke="#059669"
                       fontSize={11}
                       unit="°F"
                     />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "#0f172a",
-                        borderColor: "#334155",
+                        backgroundColor: "#fbf8f0",
+                        borderColor: "#d4c7aa",
                         fontSize: "12px",
                       }}
                     />
@@ -577,11 +577,11 @@ export function StationHistoryModal({
                     <ReferenceLine
                       yAxisId="left"
                       y={Number((station.medianPeakSwe * sweMultiplier).toFixed(1))}
-                      stroke="#e2e8f0"
+                      stroke="#5a604f"
                       strokeDasharray="5 3"
                       label={{
                         value: "Site Median Peak SWE",
-                        fill: "#e2e8f0",
+                        fill: "#5a604f",
                         fontSize: 10,
                         position: "insideTopLeft",
                       }}
@@ -591,28 +591,28 @@ export function StationHistoryModal({
                       dataKey="elNinoSwe"
                       name="El Niño WY Peak SWE"
                       stackId="swe"
-                      fill="#f97316"
+                      fill="#ea580c"
                     />
                     <Bar
                       yAxisId="left"
                       dataKey="laNinaSwe"
                       name="La Niña WY Peak SWE"
                       stackId="swe"
-                      fill="#38bdf8"
+                      fill="#0284c7"
                     />
                     <Bar
                       yAxisId="left"
                       dataKey="neutralSwe"
                       name="Neutral WY Peak SWE"
                       stackId="swe"
-                      fill="#a855f7"
+                      fill="#9333ea"
                     />
                     <Line
                       yAxisId="right"
                       type="monotone"
                       dataKey="winterTavg"
                       name="Nov–Mar Mean Temp (°F)"
-                      stroke="#10b981"
+                      stroke="#059669"
                       strokeWidth={1.8}
                       dot={false}
                     />
@@ -624,28 +624,28 @@ export function StationHistoryModal({
 
           {/* Tab 3: Live On-Demand Daily Snowfall Events & Temperature Trace */}
           <TabsContent value="daily" className="space-y-4 mt-3">
-            <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+            <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
               <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
                 <div>
-                  <h4 className="text-xs font-semibold text-slate-200">
+                  <h4 className="text-xs font-semibold text-slate-800">
                     Daily Snowfall Impulses (24h ΔSnow Depth), SWE Accumulation & Daily Temperature
                   </h4>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-slate-600">
                     Queries daily SNOTEL telemetry directly from USDA NRCS AWDB for any selected Water Year.
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-300">Water Year:</span>
+                  <span className="text-xs text-slate-700">Water Year:</span>
                   <Select
                     value={selectedDailyWy}
                     onValueChange={(v) => {
                       if (v) setSelectedDailyWy(v);
                     }}
                   >
-                    <SelectTrigger className="w-44 h-8 bg-slate-950 border-slate-700 text-xs">
+                    <SelectTrigger className="w-44 h-8 bg-slate-100 border-slate-300 text-xs">
                       <SelectValue placeholder="Water Year" />
                     </SelectTrigger>
-                    <SelectContent className="bg-slate-900 border-slate-700 text-slate-100 max-h-64">
+                    <SelectContent className="bg-slate-50 border-slate-300 text-slate-900 max-h-64">
                       {availableWys.map((wy) => {
                         const enso = ensoByWaterYear[String(wy)];
                         const phaseTag =
@@ -666,14 +666,14 @@ export function StationHistoryModal({
               </div>
 
               {dailyLoading && (
-                <div className="h-64 flex items-center justify-center gap-2 text-slate-400 text-sm">
-                  <Loader2 className="w-5 h-5 animate-spin text-sky-400" />
+                <div className="h-64 flex items-center justify-center gap-2 text-slate-600 text-sm">
+                  <Loader2 className="w-5 h-5 animate-spin text-pine-600" />
                   <span>Fetching daily SNOTEL storm telemetry for Water Year {selectedDailyWy}...</span>
                 </div>
               )}
 
               {dailyError && !dailyLoading && (
-                <div className="h-40 flex items-center justify-center text-red-400 text-xs">
+                <div className="h-40 flex items-center justify-center text-red-600 text-xs">
                   {dailyError}
                 </div>
               )}
@@ -682,33 +682,33 @@ export function StationHistoryModal({
                 <>
                   {dailyTrace.summary && (
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-3 text-center">
-                      <div className="bg-slate-950/80 border border-slate-800 rounded p-2">
-                        <div className="text-[10px] text-slate-400">Snow Events ≥ 2&quot;</div>
-                        <div className="text-sm font-bold text-sky-300">
+                      <div className="bg-slate-100/80 border border-slate-200 rounded p-2">
+                        <div className="text-[10px] text-slate-600">Snow Events ≥ 2&quot;</div>
+                        <div className="text-sm font-bold text-sky-700">
                           {dailyTrace.summary.events2in} days
                         </div>
                       </div>
-                      <div className="bg-slate-950/80 border border-slate-800 rounded p-2">
-                        <div className="text-[10px] text-slate-400">Major Storms ≥ 6&quot;</div>
-                        <div className="text-sm font-bold text-indigo-300">
+                      <div className="bg-slate-100/80 border border-slate-200 rounded p-2">
+                        <div className="text-[10px] text-slate-600">Major Storms ≥ 6&quot;</div>
+                        <div className="text-sm font-bold text-indigo-700">
                           {dailyTrace.summary.events6in} days
                         </div>
                       </div>
-                      <div className="bg-slate-950/80 border border-slate-800 rounded p-2">
-                        <div className="text-[10px] text-slate-400">Powder Dump ≥ 12&quot;</div>
-                        <div className="text-sm font-bold text-purple-300">
+                      <div className="bg-slate-100/80 border border-slate-200 rounded p-2">
+                        <div className="text-[10px] text-slate-600">Powder Dump ≥ 12&quot;</div>
+                        <div className="text-sm font-bold text-purple-700">
                           {dailyTrace.summary.events12in} days
                         </div>
                       </div>
-                      <div className="bg-slate-950/80 border border-slate-800 rounded p-2">
-                        <div className="text-[10px] text-slate-400">Max 24h Snowfall</div>
-                        <div className="text-sm font-bold text-emerald-300">
+                      <div className="bg-slate-100/80 border border-slate-200 rounded p-2">
+                        <div className="text-[10px] text-slate-600">Max 24h Snowfall</div>
+                        <div className="text-sm font-bold text-emerald-700">
                           {dailyTrace.summary.max24hSnow}&quot;
                         </div>
                       </div>
-                      <div className="bg-slate-950/80 border border-slate-800 rounded p-2">
-                        <div className="text-[10px] text-slate-400">Sub-Freezing Days</div>
-                        <div className="text-sm font-bold text-amber-300">
+                      <div className="bg-slate-100/80 border border-slate-200 rounded p-2">
+                        <div className="text-[10px] text-slate-600">Sub-Freezing Days</div>
+                        <div className="text-sm font-bold text-amber-700">
                           {dailyTrace.summary.subfreezingDays} days
                         </div>
                       </div>
@@ -718,26 +718,26 @@ export function StationHistoryModal({
                   <div className="h-64 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <ComposedChart data={dailyTrace.days}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e3d9c3" />
                         <XAxis
                           dataKey="date"
-                          stroke="#94a3b8"
+                          stroke="#6f6d5c"
                           fontSize={10}
                           tickFormatter={(v) => v.slice(5)}
                           minTickGap={28}
                         />
-                        <YAxis yAxisId="left" stroke="#38bdf8" fontSize={11} unit='"' />
+                        <YAxis yAxisId="left" stroke="#0284c7" fontSize={11} unit='"' />
                         <YAxis
                           yAxisId="right"
                           orientation="right"
-                          stroke="#f59e0b"
+                          stroke="#d97706"
                           fontSize={11}
                           unit="°F"
                         />
                         <Tooltip
                           contentStyle={{
-                            backgroundColor: "#0f172a",
-                            borderColor: "#334155",
+                            backgroundColor: "#fbf8f0",
+                            borderColor: "#d4c7aa",
                             fontSize: "12px",
                           }}
                         />
@@ -749,21 +749,21 @@ export function StationHistoryModal({
                           name="Daily SWE (in)"
                           fill="#0284c7"
                           fillOpacity={0.25}
-                          stroke="#38bdf8"
+                          stroke="#0284c7"
                           strokeWidth={2}
                         />
                         <Bar
                           yAxisId="left"
                           dataKey="snowfall24h"
                           name="24h New Snowfall Event (in)"
-                          fill="#c084fc"
+                          fill="#a855f7"
                         />
                         <Line
                           yAxisId="right"
                           type="monotone"
                           dataKey="tavg"
                           name="Daily Mean Temp (°F)"
-                          stroke="#f59e0b"
+                          stroke="#d97706"
                           strokeWidth={1.2}
                           dot={false}
                         />

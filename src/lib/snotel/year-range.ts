@@ -12,19 +12,19 @@ export const PHASE_LABEL: Record<EnsoPhase, string> = {
 
 export const PHASE_STYLE: Record<EnsoPhase, { text: string; chip: string; active: string }> = {
   el_nino: {
-    text: "text-orange-300",
-    chip: "bg-orange-500/15 text-orange-300 border-orange-500/40",
-    active: "bg-orange-500 text-white border-orange-400",
+    text: "text-orange-700",
+    chip: "bg-orange-500/15 text-orange-700 border-orange-500/40",
+    active: "bg-orange-600 text-white border-orange-600",
   },
   la_nina: {
-    text: "text-sky-300",
-    chip: "bg-sky-500/15 text-sky-300 border-sky-500/40",
-    active: "bg-sky-500 text-white border-sky-400",
+    text: "text-sky-700",
+    chip: "bg-sky-500/15 text-sky-700 border-sky-500/40",
+    active: "bg-sky-600 text-white border-sky-600",
   },
   neutral: {
-    text: "text-slate-200",
-    chip: "bg-slate-500/15 text-slate-200 border-slate-500/40",
-    active: "bg-slate-500 text-white border-slate-400",
+    text: "text-slate-800",
+    chip: "bg-slate-500/15 text-slate-800 border-slate-500/40",
+    active: "bg-slate-600 text-white border-slate-600",
   },
 };
 

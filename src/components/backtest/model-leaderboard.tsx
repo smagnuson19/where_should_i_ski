@@ -65,7 +65,7 @@ export function ModelLeaderboard({
 
   if (!rows.length) {
     return (
-      <div className="rounded-2xl border border-slate-800/90 bg-slate-900/60 p-6 text-sm text-slate-400">
+      <div className="rounded-2xl border border-slate-200/90 bg-slate-50/60 p-6 text-sm text-slate-600">
         Not enough overlapping model and station data for this winter, timing, and region.
       </div>
     );
@@ -79,34 +79,34 @@ export function ModelLeaderboard({
         : "Ranked by how many degrees the daily high missed the station reading";
 
   return (
-    <div className="rounded-2xl border border-slate-800/90 bg-slate-900/60 overflow-hidden">
-      <div className="px-4 sm:px-5 py-3 border-b border-slate-800/60">
-        <div className="text-sm font-semibold text-white">Who was closest?</div>
-        <div className="text-xs text-slate-400 mt-0.5">{subtitle}</div>
+    <div className="rounded-2xl border border-slate-200/90 bg-slate-50/60 overflow-hidden">
+      <div className="px-4 sm:px-5 py-3 border-b border-slate-200/60">
+        <div className="text-sm font-semibold text-slate-950">Who was closest?</div>
+        <div className="text-xs text-slate-600 mt-0.5">{subtitle}</div>
       </div>
       <Table>
         <TableHeader>
-          <TableRow className="border-slate-800 hover:bg-transparent">
-            <TableHead className="text-xs text-slate-400 w-10">#</TableHead>
-            <TableHead className="text-xs text-slate-400">Model</TableHead>
+          <TableRow className="border-slate-200 hover:bg-transparent">
+            <TableHead className="text-xs text-slate-600 w-10">#</TableHead>
+            <TableHead className="text-xs text-slate-600">Model</TableHead>
             {mode === "snowfall" && (
               <>
-                <TableHead className="text-xs text-slate-400">Avg miss</TableHead>
-                <TableHead className="text-xs text-slate-400">Season total</TableHead>
-                <TableHead className="text-xs text-slate-400">Caught 6&quot;+ days</TableHead>
+                <TableHead className="text-xs text-slate-600">Avg miss</TableHead>
+                <TableHead className="text-xs text-slate-600">Season total</TableHead>
+                <TableHead className="text-xs text-slate-600">Caught 6&quot;+ days</TableHead>
               </>
             )}
             {mode === "water" && (
               <>
-                <TableHead className="text-xs text-slate-400">Avg miss</TableHead>
-                <TableHead className="text-xs text-slate-400">Season total</TableHead>
-                <TableHead className="text-xs text-slate-400">Caught big days</TableHead>
+                <TableHead className="text-xs text-slate-600">Avg miss</TableHead>
+                <TableHead className="text-xs text-slate-600">Season total</TableHead>
+                <TableHead className="text-xs text-slate-600">Caught big days</TableHead>
               </>
             )}
             {mode === "temperature" && (
               <>
-                <TableHead className="text-xs text-slate-400">High miss</TableHead>
-                <TableHead className="text-xs text-slate-400">Low miss</TableHead>
+                <TableHead className="text-xs text-slate-600">High miss</TableHead>
+                <TableHead className="text-xs text-slate-600">Low miss</TableHead>
               </>
             )}
           </TableRow>
@@ -118,26 +118,26 @@ export function ModelLeaderboard({
             const displayRank = row.insufficientData ? null : idx + 1;
             const best = !row.insufficientData && idx === 0;
             return (
-              <TableRow key={row.modelId} className="border-slate-800/80">
-                <TableCell className="font-mono text-slate-300">{displayRank ?? "–"}</TableCell>
+              <TableRow key={row.modelId} className="border-slate-200/80">
+                <TableCell className="font-mono text-slate-700">{displayRank ?? "–"}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2 min-w-0">
                     <span className="w-2 h-2 rounded-full shrink-0" style={{ background: color }} />
                     <div className="min-w-0">
-                      <div className="text-sm text-white truncate flex flex-wrap items-center gap-2">
+                      <div className="text-sm text-slate-950 truncate flex flex-wrap items-center gap-2">
                         {meta?.label ?? row.modelId}
                         {best && row.tiedForFirst && (
-                          <Badge variant="outline" className="text-[10px] border-sky-500/40 text-sky-300">
+                          <Badge variant="outline" className="text-[10px] border-pine-500/40 text-pine-700">
                             tied for best
                           </Badge>
                         )}
                         {best && !row.tiedForFirst && (
-                          <Badge variant="outline" className="text-[10px] border-sky-500/40 text-sky-300">
+                          <Badge variant="outline" className="text-[10px] border-pine-500/40 text-pine-700">
                             closest
                           </Badge>
                         )}
                         {row.insufficientData && (
-                          <Badge variant="outline" className="text-[10px] border-amber-500/40 text-amber-300">
+                          <Badge variant="outline" className="text-[10px] border-amber-500/40 text-amber-700">
                             not enough data
                           </Badge>
                         )}
@@ -148,32 +148,32 @@ export function ModelLeaderboard({
                 </TableCell>
                 {mode === "snowfall" && (
                   <>
-                    <TableCell className="font-mono text-slate-200">
+                    <TableCell className="font-mono text-slate-800">
                       {fmt(row.snowMaeIn, 1, '"')}
                     </TableCell>
-                    <TableCell className="text-slate-300 text-xs">
+                    <TableCell className="text-slate-700 text-xs">
                       {seasonVsObserved(row.snowBiasPct)}
                     </TableCell>
-                    <TableCell className="font-mono text-slate-300">
+                    <TableCell className="font-mono text-slate-700">
                       {catchRate(row.snowPod)}
                     </TableCell>
                   </>
                 )}
                 {mode === "water" && (
                   <>
-                    <TableCell className="font-mono text-slate-200">
+                    <TableCell className="font-mono text-slate-800">
                       {fmt(row.sweMaeIn, 2, '" water')}
                     </TableCell>
-                    <TableCell className="text-slate-300 text-xs">
+                    <TableCell className="text-slate-700 text-xs">
                       {seasonVsObserved(row.sweBiasPct)}
                     </TableCell>
-                    <TableCell className="font-mono text-slate-300">{catchRate(row.pod)}</TableCell>
+                    <TableCell className="font-mono text-slate-700">{catchRate(row.pod)}</TableCell>
                   </>
                 )}
                 {mode === "temperature" && (
                   <>
-                    <TableCell className="font-mono text-slate-200">{fmt(row.tmaxMaeF, 1, "°F")}</TableCell>
-                    <TableCell className="font-mono text-slate-200">{fmt(row.tminMaeF, 1, "°F")}</TableCell>
+                    <TableCell className="font-mono text-slate-800">{fmt(row.tmaxMaeF, 1, "°F")}</TableCell>
+                    <TableCell className="font-mono text-slate-800">{fmt(row.tminMaeF, 1, "°F")}</TableCell>
                   </>
                 )}
               </TableRow>

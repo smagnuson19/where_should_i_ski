@@ -1,16 +1,16 @@
 /** Stable colors for model series across charts. */
 export const MODEL_COLORS: Record<string, string> = {
-  best_match: "#e2e8f0",
-  ecmwf_ifs: "#38bdf8",
-  ecmwf_aifs025_single: "#a78bfa",
-  gfs_seamless: "#f97316",
-  ncep_hrrr_conus: "#f43f5e",
-  ncep_nbm_conus: "#14b8a6",
-  gem_seamless: "#84cc16",
-  icon_seamless: "#eab308",
-  ukmo_global_deterministic_10km: "#fb7185",
+  best_match: "#64748b",
+  ecmwf_ifs: "#0284c7",
+  ecmwf_aifs025_single: "#7c3aed",
+  gfs_seamless: "#ea580c",
+  ncep_hrrr_conus: "#e11d48",
+  ncep_nbm_conus: "#0d9488",
+  gem_seamless: "#65a30d",
+  icon_seamless: "#ca8a04",
+  ukmo_global_deterministic_10km: "#db2777",
 };
 
 export function modelColor(id: string): string {
-  return MODEL_COLORS[id] ?? "#94a3b8";
+  return MODEL_COLORS[id] ?? "#8b8774";
 }

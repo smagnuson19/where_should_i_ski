@@ -7,8 +7,8 @@ export const PCT_BINS = [
   { max: Infinity, color: "#2563eb", label: "Over 115%", meaning: "Much more snow than typical" },
 ] as const;
 
-export const NO_DATA_COLOR = "#1e293b";
-export const OUTSIDE_NETWORK_COLOR = "#0f172a";
+export const NO_DATA_COLOR = "#cfc4aa";
+export const OUTSIDE_NETWORK_COLOR = "#ebe4d3";
 
 export function pctColor(pct: number | null | undefined): string {
   if (pct === null || pct === undefined || !Number.isFinite(pct)) return NO_DATA_COLOR;

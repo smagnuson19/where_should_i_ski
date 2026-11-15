@@ -30,19 +30,19 @@ export function ResortList(props: ResortListProps) {
   });
 
   return (
-    <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 space-y-3">
+    <section className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-sm font-semibold text-white flex items-center gap-1.5">
-          <Mountain className="w-4 h-4 text-sky-400" />
+        <h2 className="text-sm font-semibold text-slate-950 flex items-center gap-1.5">
+          <Mountain className="w-4 h-4 text-pine-600" />
           Ski resorts: {props.scopeLabel} ({resorts.length})
         </h2>
         <div className="relative w-full sm:w-80">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+          <Search className="w-3.5 h-3.5 text-slate-600 absolute left-2.5 top-2.5" />
           <Input
             value={props.searchQuery}
             onChange={(e) => props.onSearchChange(e.target.value)}
             placeholder="Search by resort name or state"
-            className="pl-8 h-8 bg-slate-950 border-slate-800 text-xs"
+            className="pl-8 h-8 bg-slate-100 border-slate-200 text-xs"
           />
         </div>
       </div>
@@ -60,19 +60,19 @@ export function ResortList(props: ResortListProps) {
               key={r.id}
               type="button"
               onClick={() => props.onOpenResort(r)}
-              className="text-left rounded-lg border border-slate-800/90 bg-slate-950/70 hover:bg-slate-800/80 hover:border-sky-500/50 p-2.5 transition"
+              className="text-left rounded-lg border border-slate-200/90 bg-slate-100/70 hover:bg-slate-200/80 hover:border-pine-500/50 p-2.5 transition"
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="font-semibold text-xs text-white truncate">{r.name}</span>
-                <span className="text-xs font-mono font-semibold flex items-center gap-1.5 text-white">
+                <span className="font-semibold text-xs text-slate-950 truncate">{r.name}</span>
+                <span className="text-xs font-mono font-semibold flex items-center gap-1.5 text-slate-950">
                   <span
                     className="w-2 h-2 rotate-45"
-                    style={{ backgroundColor: r.match === "none" ? "#64748b" : pctColor(pct) }}
+                    style={{ backgroundColor: r.match === "none" ? "#8b8774" : pctColor(pct) }}
                   />
                   {r.match === "none" ? "—" : formatPct(pct)}
                 </span>
               </div>
-              <div className="text-[11px] text-slate-400 mt-0.5">
+              <div className="text-[11px] text-slate-600 mt-0.5">
                 {r.state} · {r.verticalM.toLocaleString()} m vert
                 {s?.typicalSnow != null ? ` · typical ${s.typicalSnow} ${unit}` : ""}
                 {r.match === "distant" ? " · distant station" : ""}

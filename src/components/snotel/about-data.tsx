@@ -17,9 +17,9 @@ export function AboutData({
     <Disclosure
       title="About the data and method"
       summary="Where the numbers come from and how they are computed"
-      icon={<Database className="w-4 h-4 text-slate-400" />}
+      icon={<Database className="w-4 h-4 text-slate-600" />}
     >
-      <ul className="list-disc pl-5 space-y-1.5 text-xs text-slate-400 leading-relaxed">
+      <ul className="list-disc pl-5 space-y-1.5 text-xs text-slate-600 leading-relaxed">
         <li>
           Sources: {source}. {totalStations} snow-monitoring sites; before about 1980 only a few dozen long-record sites
           reported, so recent ranges rest on many more sites.

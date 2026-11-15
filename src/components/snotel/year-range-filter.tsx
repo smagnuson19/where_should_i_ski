@@ -44,8 +44,8 @@ export function YearRangeFilter({
               onClick={() => onRangeChange(p.range)}
               className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition ${
                 active
-                  ? "bg-sky-500/20 text-sky-200 border-sky-500/50 shadow-xs"
-                  : "bg-slate-950 text-slate-300 border-slate-800 hover:bg-slate-800/80 hover:text-white"
+                  ? "bg-pine-500/20 text-pine-800 border-pine-500/50 shadow-xs"
+                  : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200/80 hover:text-slate-950"
               }`}
             >
               {p.label}
@@ -55,7 +55,7 @@ export function YearRangeFilter({
       </div>
 
       <div className="flex items-center gap-3">
-        <span className="font-mono text-xs font-medium text-slate-200 w-10 text-right">{shown[0]}</span>
+        <span className="font-mono text-xs font-medium text-slate-800 w-10 text-right">{shown[0]}</span>
         <Slider
           aria-label="Water-year range"
           value={shown}
@@ -69,11 +69,11 @@ export function YearRangeFilter({
             if (Array.isArray(v)) onRangeChange({ start: v[0], end: v[1] });
           }}
         />
-        <span className="font-mono text-xs font-medium text-slate-200 w-10">{shown[1]}</span>
+        <span className="font-mono text-xs font-medium text-slate-800 w-10">{shown[1]}</span>
       </div>
 
-      <div className="text-[11px] text-slate-400">
-        <span className="text-slate-200 font-semibold font-mono">{phaseCounts.total} winters</span> ({winterSpan(range)}
+      <div className="text-[11px] text-slate-600">
+        <span className="text-slate-800 font-semibold font-mono">{phaseCounts.total} winters</span> ({winterSpan(range)}
         ):{" "}
         {ENSO_PHASES.map((p: EnsoPhase, i) => (
           <span key={p}>
@@ -81,7 +81,7 @@ export function YearRangeFilter({
               <span className="font-mono">{phaseCounts[p]}</span> {PHASE_LABEL[p]}
             </span>
             {phaseCounts[p] < LOW_CONFIDENCE_WINTERS && (
-              <AlertTriangle className="inline w-3 h-3 ml-0.5 -mt-0.5 text-amber-400" aria-label="low confidence" />
+              <AlertTriangle className="inline w-3 h-3 ml-0.5 -mt-0.5 text-amber-600" aria-label="low confidence" />
             )}
             {i < ENSO_PHASES.length - 1 ? " · " : ""}
           </span>

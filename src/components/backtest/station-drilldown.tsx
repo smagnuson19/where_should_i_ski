@@ -101,21 +101,21 @@ export function StationDrilldown({
       : "Bars = measured pillow water gain · lines = season total water (observed vs models)";
 
   return (
-    <div className="rounded-2xl border border-slate-800/90 bg-slate-900/60 overflow-hidden">
-      <div className="px-4 sm:px-5 py-3 border-b border-slate-800/60 flex flex-wrap items-center justify-between gap-3">
+    <div className="rounded-2xl border border-slate-200/90 bg-slate-50/60 overflow-hidden">
+      <div className="px-4 sm:px-5 py-3 border-b border-slate-200/60 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-sm font-semibold text-white">{title}</div>
-          <div className="text-xs text-slate-400 mt-0.5">{subtitle}</div>
+          <div className="text-sm font-semibold text-slate-950">{title}</div>
+          <div className="text-xs text-slate-600 mt-0.5">{subtitle}</div>
         </div>
         <Select
           items={stationItems.map((s) => ({ value: s.value, label: s.label }))}
           value={triplet ?? undefined}
           onValueChange={(v) => setTriplet(v ? String(v) : null)}
         >
-          <SelectTrigger className="w-72 max-w-full h-9 bg-slate-950 border-slate-800 text-xs rounded-lg">
+          <SelectTrigger className="w-72 max-w-full h-9 bg-slate-100 border-slate-200 text-xs rounded-lg">
             <SelectValue placeholder="Pick a station" />
           </SelectTrigger>
-          <SelectContent className="bg-slate-900 border-slate-700 text-slate-100 max-h-72">
+          <SelectContent className="bg-slate-50 border-slate-300 text-slate-900 max-h-72">
             {stationItems.map((s) => (
               <SelectItem key={s.value} value={s.value} className="text-xs">
                 {s.label}
@@ -127,8 +127,8 @@ export function StationDrilldown({
 
       <div className="px-4 sm:px-5 py-4">
         {loading && (
-          <div className="h-72 flex items-center justify-center gap-2 text-sm text-slate-400">
-            <Loader2 className="w-4 h-4 animate-spin text-sky-400" />
+          <div className="h-72 flex items-center justify-center gap-2 text-sm text-slate-600">
+            <Loader2 className="w-4 h-4 animate-spin text-pine-600" />
             Loading station series…
           </div>
         )}
@@ -141,19 +141,19 @@ export function StationDrilldown({
           <div className="h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e3d9c3" />
                 <XAxis
                   dataKey="label"
-                  stroke="#94a3b8"
+                  stroke="#6f6d5c"
                   fontSize={10}
                   interval="preserveStartEnd"
                   minTickGap={24}
                 />
-                <YAxis yAxisId="cum" stroke="#94a3b8" fontSize={11} width={44} unit='"' />
+                <YAxis yAxisId="cum" stroke="#6f6d5c" fontSize={11} width={44} unit='"' />
                 <YAxis
                   yAxisId="daily"
                   orientation="right"
-                  stroke="#475569"
+                  stroke="#8b8774"
                   fontSize={11}
                   width={36}
                   unit='"'
@@ -191,7 +191,7 @@ export function StationDrilldown({
                   yAxisId="daily"
                   dataKey="obsDaily"
                   name="obsDaily"
-                  fill="#334155"
+                  fill="#8b8774"
                   fillOpacity={0.55}
                   maxBarSize={4}
                 />
@@ -200,7 +200,7 @@ export function StationDrilldown({
                   type="monotone"
                   dataKey="obsCum"
                   name="obsCum"
-                  stroke="#f8fafc"
+                  stroke="#1c2a21"
                   strokeWidth={2.4}
                   dot={false}
                 />

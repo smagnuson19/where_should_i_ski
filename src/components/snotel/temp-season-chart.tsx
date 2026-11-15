@@ -10,20 +10,20 @@ export function TempSeasonChart({ data }: { data: SeasonalMonthPoint[] }) {
     <div className="h-64 w-full">
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-          <XAxis dataKey="monthLabel" stroke="#94a3b8" fontSize={11} />
-          <YAxis stroke="#94a3b8" fontSize={11} unit="°F" width={48} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e3d9c3" />
+          <XAxis dataKey="monthLabel" stroke="#6f6d5c" fontSize={11} />
+          <YAxis stroke="#6f6d5c" fontSize={11} unit="°F" width={48} />
           <Tooltip contentStyle={CHART_TOOLTIP_STYLE} formatter={(v) => `${v}°F`} />
           <Legend wrapperStyle={{ fontSize: "11px" }} />
           <ReferenceLine
             y={32}
-            stroke="#ef4444"
+            stroke="#dc2626"
             strokeDasharray="4 4"
-            label={{ value: "32°F freezing", fill: "#f87171", fontSize: 10 }}
+            label={{ value: "32°F freezing", fill: "#b91c1c", fontSize: 10 }}
           />
-          <Line type="monotone" dataKey="tavgMedian" name="All winters" stroke="#e2e8f0" strokeWidth={2} strokeDasharray="4 3" />
-          <Line type="monotone" dataKey="tavgElNino" name="El Niño" stroke="#f97316" strokeWidth={2.2} />
-          <Line type="monotone" dataKey="tavgLaNina" name="La Niña" stroke="#38bdf8" strokeWidth={2.2} />
+          <Line type="monotone" dataKey="tavgMedian" name="All winters" stroke="#5a604f" strokeWidth={2} strokeDasharray="4 3" />
+          <Line type="monotone" dataKey="tavgElNino" name="El Niño" stroke="#ea580c" strokeWidth={2.2} />
+          <Line type="monotone" dataKey="tavgLaNina" name="La Niña" stroke="#0284c7" strokeWidth={2.2} />
         </ComposedChart>
       </ResponsiveContainer>
     </div>

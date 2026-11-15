@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { Map as MapIcon, MapPin, Mountain } from "lucide-react";
+import { MapPin, Mountain } from "lucide-react";
+import { TrailMark } from "@/components/trail/trail-mark";
 import { EnsoPhase } from "@/types/snotel";
 import { StationData } from "@/types/japan-enso";
 import { ResortSnowfallStats, SkiResort } from "@/types/resorts";
@@ -37,25 +38,25 @@ export function JapanMapPanel(props: JapanMapPanelProps) {
 
   return (
     <section className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-      <div className="lg:col-span-8 rounded-2xl border border-slate-800/90 bg-slate-900/60 p-4 sm:p-5 space-y-3.5">
+      <div className="lg:col-span-8 rounded-2xl border border-slate-200/90 bg-slate-50/60 p-4 sm:p-5 space-y-3.5">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
-            <MapIcon className="w-4 h-4 text-sky-400" />
+          <h2 className="text-sm sm:text-base font-bold text-slate-950 flex items-center gap-2">
+            <TrailMark level="intermediate" />
             Regional Snowfall Map — {PHASE_LABEL[phase]} Winters
           </h2>
           <div className="flex flex-wrap items-center gap-2">
-            <label className="flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer bg-slate-950/70 border border-slate-800 px-3 py-1.5 rounded-lg hover:border-slate-700 transition">
-              <MapPin className="w-3.5 h-3.5 text-sky-400" />
+            <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer bg-slate-100/70 border border-slate-200 px-3 py-1.5 rounded-lg hover:border-slate-300 transition">
+              <MapPin className="w-3.5 h-3.5 text-pine-600" />
               Show JMA stations
-              {props.showStations && <span className="font-mono text-slate-400">({props.stations.length})</span>}
+              {props.showStations && <span className="font-mono text-slate-600">({props.stations.length})</span>}
               <Switch checked={props.showStations} onCheckedChange={(v) => props.onShowStationsChange(Boolean(v))} />
             </label>
             {props.onShowResortsChange && (
-              <label className="flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer bg-slate-950/70 border border-slate-800 px-3 py-1.5 rounded-lg hover:border-slate-700 transition">
-                <Mountain className="w-3.5 h-3.5 text-sky-400" />
+              <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer bg-slate-100/70 border border-slate-200 px-3 py-1.5 rounded-lg hover:border-slate-300 transition">
+                <Mountain className="w-3.5 h-3.5 text-pine-600" />
                 Show ski resorts
                 {props.showResorts && props.resorts && (
-                  <span className="font-mono text-slate-400">({props.resorts.length})</span>
+                  <span className="font-mono text-slate-600">({props.resorts.length})</span>
                 )}
                 <Switch
                   checked={Boolean(props.showResorts)}
@@ -77,21 +78,21 @@ export function JapanMapPanel(props: JapanMapPanelProps) {
           onOpenResort={props.onOpenResort}
         />
 
-        <div className="space-y-2.5 pt-1 text-xs text-slate-300">
-          <div className="text-slate-400 leading-relaxed">
+        <div className="space-y-2.5 pt-1 text-xs text-slate-700">
+          <div className="text-slate-600 leading-relaxed">
             Shading shows median <GlossaryTerm entry={JAPAN_GLOSSARY.seasonSnowfall}>season snowfall</GlossaryTerm> in{" "}
-            <strong className="font-semibold text-slate-200">{PHASE_LABEL[phase]}</strong> winters as{" "}
-            <GlossaryTerm entry={JAPAN_GLOSSARY.pctTypical} /> (<span className="font-mono text-slate-200">100%</span> =
+            <strong className="font-semibold text-slate-800">{PHASE_LABEL[phase]}</strong> winters as{" "}
+            <GlossaryTerm entry={JAPAN_GLOSSARY.pctTypical} /> (<span className="font-mono text-slate-800">100%</span> =
             typical winter).
             {props.showStations ? " White dots are the weather stations behind each region." : ""}
             {props.showResorts ? " Diamonds are ski resorts colored by nearby AMeDAS season snowfall." : ""}
           </div>
           <PctScale />
-          <div className="flex flex-wrap gap-4 text-[11px] text-slate-400">
+          <div className="flex flex-wrap gap-4 text-[11px] text-slate-600">
             <LegendSwatch color={OUTSIDE_NETWORK_COLOR}>Outside the eight regions</LegendSwatch>
             {props.showResorts && (
               <span className="inline-flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rotate-45 border border-slate-500 bg-sky-400" />
+                <span className="w-2.5 h-2.5 rotate-45 border border-slate-500 bg-pine-600" />
                 Ski resort
               </span>
             )}

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { Map as MapIcon, MapPin, Mountain } from "lucide-react";
+import { MapPin, Mountain } from "lucide-react";
+import { TrailMark } from "@/components/trail/trail-mark";
 import { EnsoPhase, RegionInfo, SnotelStation } from "@/types/snotel";
 import { RegionRangeSummary, StationRangeStats } from "@/types/snotel-range";
 import { ResortSnowfallStats, SkiResort } from "@/types/resorts";
@@ -74,17 +75,17 @@ export function EnsoMapPanel(props: EnsoMapPanelProps) {
 
   return (
     <section className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-      <div className="lg:col-span-8 rounded-2xl border border-slate-800/90 bg-slate-900/60 p-4 sm:p-5 space-y-3.5 flex flex-col justify-between">
+      <div className="lg:col-span-8 rounded-2xl border border-slate-200/90 bg-slate-50/60 p-4 sm:p-5 space-y-3.5 flex flex-col justify-between">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
-            <MapIcon className="w-4 h-4 text-sky-400" />
+          <h2 className="text-sm sm:text-base font-bold text-slate-950 flex items-center gap-2">
+            <TrailMark level="intermediate" />
             Regional Snowpack Map — {PHASE_LABEL[phase]} Winters
           </h2>
           <div className="flex flex-wrap items-center gap-2">
             <Select items={stateItems} value={focusedPostal ?? "US"} onValueChange={(v) => focusState(!v || v === "US" ? null : String(v))}>
               <SelectTrigger
                 aria-label="Zoom to a state"
-                className="w-52 bg-slate-950 border-slate-800 text-xs h-8 rounded-lg"
+                className="w-52 bg-slate-100 border-slate-200 text-xs h-8 rounded-lg"
               >
                 <SelectValue />
               </SelectTrigger>
@@ -99,18 +100,18 @@ export function EnsoMapPanel(props: EnsoMapPanelProps) {
                 ))}
               </SelectContent>
             </Select>
-            <label className="flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer bg-slate-950/70 border border-slate-800 px-3 py-1.5 rounded-lg hover:border-slate-700 transition">
-              <MapPin className="w-3.5 h-3.5 text-sky-400" />
+            <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer bg-slate-100/70 border border-slate-200 px-3 py-1.5 rounded-lg hover:border-slate-300 transition">
+              <MapPin className="w-3.5 h-3.5 text-pine-600" />
               Show SNOTEL stations
-              {props.showSites && <span className="font-mono text-slate-400">({props.visibleSites.length})</span>}
+              {props.showSites && <span className="font-mono text-slate-600">({props.visibleSites.length})</span>}
               <Switch checked={props.showSites} onCheckedChange={(v) => props.onShowSitesChange(Boolean(v))} />
             </label>
             {props.onShowResortsChange && (
-              <label className="flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer bg-slate-950/70 border border-slate-800 px-3 py-1.5 rounded-lg hover:border-slate-700 transition">
-                <Mountain className="w-3.5 h-3.5 text-sky-400" />
+              <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer bg-slate-100/70 border border-slate-200 px-3 py-1.5 rounded-lg hover:border-slate-300 transition">
+                <Mountain className="w-3.5 h-3.5 text-pine-600" />
                 Show ski resorts
                 {props.showResorts && props.resorts && (
-                  <span className="font-mono text-slate-400">({props.resorts.length})</span>
+                  <span className="font-mono text-slate-600">({props.resorts.length})</span>
                 )}
                 <Switch
                   checked={Boolean(props.showResorts)}

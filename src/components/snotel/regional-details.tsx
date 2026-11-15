@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Mountain } from "lucide-react";
+import { TrailMark } from "@/components/trail/trail-mark";
 import { SeasonalMonthPoint, SnotelCoreData, SnotelStation, StormSummaryMetrics } from "@/types/snotel";
 import { RegionRangeSummary, StationRangeStats, YearRange } from "@/types/snotel-range";
 import { Slider } from "@/components/ui/slider";
@@ -41,10 +42,11 @@ export function RegionalDetails(props: RegionalDetailsProps) {
     <section id={REGION_DETAILS_ID} className="space-y-4 scroll-mt-20 pt-2">
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <h2 className="text-base sm:text-lg font-bold tracking-tight text-white">
+          <h2 className="text-base sm:text-lg font-bold tracking-tight text-slate-950">
+            <TrailMark level="advanced" className="mr-2.5 align-middle" />
             Region Deep Dive: {regionName}
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-600 mt-0.5">
             {winterSpan(props.range)} · {props.bandLabel}. Choose a region below or click any region on the map.
           </p>
         </div>
@@ -61,8 +63,8 @@ export function RegionalDetails(props: RegionalDetailsProps) {
                 onClick={() => props.onSelectRegion(id)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition ${
                   active
-                    ? "bg-sky-500/20 text-sky-200 border-sky-500/50 shadow-xs"
-                    : "bg-slate-900/80 text-slate-300 border-slate-800 hover:bg-slate-800 hover:text-white"
+                    ? "bg-pine-500/20 text-pine-800 border-pine-500/50 shadow-xs"
+                    : "bg-slate-50/80 text-slate-700 border-slate-200 hover:bg-slate-200 hover:text-slate-950"
                 }`}
               >
                 {label}
@@ -79,13 +81,13 @@ export function RegionalDetails(props: RegionalDetailsProps) {
         tempOffsetF={tempOffsetF}
       />
 
-      <div className="rounded-2xl border border-slate-800/90 bg-slate-900/60 px-4 py-3.5">
+      <div className="rounded-2xl border border-slate-200/90 bg-slate-50/60 px-4 py-3.5">
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs mb-2.5">
-          <span className="text-slate-200 font-semibold flex items-center gap-1.5">
-            <Mountain className="w-4 h-4 text-sky-400" />
+          <span className="text-slate-800 font-semibold flex items-center gap-1.5">
+            <Mountain className="w-4 h-4 text-pine-600" />
             Elevation Sensitivity Simulator (Orographic Rule of Thumb)
           </span>
-          <span className="font-mono text-xs font-semibold text-sky-300 bg-slate-950/80 border border-slate-800 px-2.5 py-0.5 rounded-md">
+          <span className="font-mono text-xs font-semibold text-pine-700 bg-slate-100/80 border border-slate-200 px-2.5 py-0.5 rounded-md">
             {elevOffsetFt >= 0 ? `+${elevOffsetFt}` : elevOffsetFt} ft → snowpack ×{sweMultiplier.toFixed(2)},{" "}
             {tempOffsetF >= 0 ? "+" : ""}
             {tempOffsetF.toFixed(1)}°F
@@ -99,7 +101,7 @@ export function RegionalDetails(props: RegionalDetailsProps) {
           step={250}
           onValueChange={(v) => props.onElevOffsetChange(Array.isArray(v) ? v[0] : v)}
         />
-        <p className="text-[11px] text-slate-400 mt-2">
+        <p className="text-[11px] text-slate-600 mt-2">
           Adjusts the snowpack and temperature curves below by ~8% more SWE and ~3.5°F colder air per 1,000 ft of
           elevation gain.
         </p>

@@ -24,19 +24,19 @@ export function StationList(props: StationListProps) {
   const { stations, stationStats, phase } = props;
 
   return (
-    <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 space-y-3">
+    <section className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-sm font-semibold text-white flex items-center gap-1.5">
-          <MapPin className="w-4 h-4 text-sky-400" />
+        <h2 className="text-sm font-semibold text-slate-950 flex items-center gap-1.5">
+          <MapPin className="w-4 h-4 text-pine-600" />
           SNOTEL sites: {props.scopeLabel} ({stations.length})
         </h2>
         <div className="relative w-full sm:w-80">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+          <Search className="w-3.5 h-3.5 text-slate-600 absolute left-2.5 top-2.5" />
           <Input
             value={props.searchQuery}
             onChange={(e) => props.onSearchChange(e.target.value)}
             placeholder="Search by site name, state (CO, WA...), county or ID"
-            className="pl-8 h-8 bg-slate-950 border-slate-800 text-xs"
+            className="pl-8 h-8 bg-slate-100 border-slate-200 text-xs"
           />
         </div>
       </div>
@@ -54,16 +54,16 @@ export function StationList(props: StationListProps) {
               key={st.triplet}
               type="button"
               onClick={() => props.onOpenStation(st)}
-              className="text-left rounded-lg border border-slate-800/90 bg-slate-950/70 hover:bg-slate-800/80 hover:border-sky-500/50 p-2.5 transition"
+              className="text-left rounded-lg border border-slate-200/90 bg-slate-100/70 hover:bg-slate-200/80 hover:border-pine-500/50 p-2.5 transition"
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="font-semibold text-xs text-white truncate">{st.name}</span>
-                <span className="text-xs font-mono font-semibold flex items-center gap-1.5 text-white">
+                <span className="font-semibold text-xs text-slate-950 truncate">{st.name}</span>
+                <span className="text-xs font-mono font-semibold flex items-center gap-1.5 text-slate-950">
                   <span className="w-2 h-2 rounded-full" style={{ backgroundColor: pctColor(pct) }} />
                   {formatPct(pct)}
                 </span>
               </div>
-              <div className="text-[11px] text-slate-400 mt-0.5">
+              <div className="text-[11px] text-slate-600 mt-0.5">
                 {st.state} · {st.elevation.toLocaleString()} ft · typical peak {s?.medianPeakSwe ?? "–"} in SWE
               </div>
             </button>

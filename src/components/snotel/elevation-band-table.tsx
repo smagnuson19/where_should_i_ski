@@ -33,10 +33,10 @@ export function ElevationBandTable(props: ElevationBandTableProps) {
   return (
     <Table>
       <TableHeader>
-        <TableRow className="border-slate-800">
-          <TableHead className="text-xs text-slate-400">Elevation band</TableHead>
-          <TableHead className="text-xs text-slate-400 text-right">Sites</TableHead>
-          <TableHead className="text-xs text-slate-400 text-right">Typical peak SWE</TableHead>
+        <TableRow className="border-slate-200">
+          <TableHead className="text-xs text-slate-600">Elevation band</TableHead>
+          <TableHead className="text-xs text-slate-600 text-right">Sites</TableHead>
+          <TableHead className="text-xs text-slate-600 text-right">Typical peak SWE</TableHead>
           {ENSO_PHASES.map((p) => (
             <TableHead key={p} className={`text-xs text-right ${PHASE_STYLE[p].text}`}>
               {PHASE_LABEL[p]}
@@ -46,8 +46,8 @@ export function ElevationBandTable(props: ElevationBandTableProps) {
       </TableHeader>
       <TableBody>
         {rows.map(({ band, summary }) => (
-          <TableRow key={band.id} className="border-slate-800">
-            <TableCell className="text-xs text-slate-200">{band.label}</TableCell>
+          <TableRow key={band.id} className="border-slate-200">
+            <TableCell className="text-xs text-slate-800">{band.label}</TableCell>
             <TableCell className="text-xs text-right font-mono">{summary.siteCount}</TableCell>
             <TableCell className="text-xs text-right font-mono">
               {summary.typicalPeakSwe !== null ? `${(summary.typicalPeakSwe * props.sweMultiplier).toFixed(1)} in` : "–"}
@@ -57,7 +57,7 @@ export function ElevationBandTable(props: ElevationBandTableProps) {
               return (
                 <TableCell key={p} className="text-xs text-right font-mono">
                   <span className="inline-flex items-center gap-1.5 justify-end">
-                    {s.pctOfMedian !== null && s.lowConfidence && <AlertTriangle className="w-3 h-3 text-amber-400" aria-label="low confidence" />}
+                    {s.pctOfMedian !== null && s.lowConfidence && <AlertTriangle className="w-3 h-3 text-amber-600" aria-label="low confidence" />}
                     <span className="w-2 h-2 rounded-full" style={{ backgroundColor: pctColor(s.pctOfMedian) }} />
                     {formatPct(s.pctOfMedian)}
                     <span className="text-slate-500">({s.winters})</span>

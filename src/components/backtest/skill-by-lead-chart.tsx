@@ -88,17 +88,17 @@ export function SkillByLeadChart({
     <div className="h-72 w-full">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 8, right: 12, left: 4, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-          <XAxis dataKey="label" stroke="#94a3b8" fontSize={11} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e3d9c3" />
+          <XAxis dataKey="label" stroke="#6f6d5c" fontSize={11} />
           <YAxis
-            stroke="#94a3b8"
+            stroke="#6f6d5c"
             fontSize={11}
             width={52}
             label={{
               value: yLabel,
               angle: -90,
               position: "insideLeft",
-              style: { fill: "#64748b", fontSize: 10 },
+              style: { fill: "#6f6d5c", fontSize: 10 },
             }}
           />
           <Tooltip

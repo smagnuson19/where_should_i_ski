@@ -62,9 +62,9 @@ export function RegionWinners({
       {cards.map(({ region, winner, margin, runner }) => (
         <div
           key={region.id}
-          className="rounded-2xl border border-slate-800/90 bg-slate-900/60 p-4 space-y-1.5"
+          className="rounded-2xl border border-slate-200/90 bg-slate-50/60 p-4 space-y-1.5"
         >
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-600">
             {region.label}
           </div>
           {!winner ? (
@@ -76,11 +76,11 @@ export function RegionWinners({
                   className="w-2.5 h-2.5 rounded-full shrink-0"
                   style={{ background: modelColor(winner.modelId) }}
                 />
-                <div className="text-base font-semibold text-white truncate">
+                <div className="text-base font-semibold text-slate-950 truncate">
                   {byId.get(winner.modelId)?.label ?? winner.modelId}
                 </div>
               </div>
-              <div className="text-xs text-slate-400">
+              <div className="text-xs text-slate-600">
                 {formatMetric(metricOf(winner, mode)!, mode)}
                 {margin != null && runner && (
                   <span className="text-slate-500">

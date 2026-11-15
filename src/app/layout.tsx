@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Space_Grotesk, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Barlow_Condensed, Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
@@ -9,8 +9,8 @@ const jakartaSans = Plus_Jakarta_Sans({
   weight: ["400", "500", "600", "700", "800"],
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const barlowCondensed = Barlow_Condensed({
+  variable: "--font-barlow-condensed",
   subsets: ["latin"],
   weight: ["500", "600", "700"],
 });
@@ -34,10 +34,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${jakartaSans.variable} ${spaceGrotesk.variable} ${geistMono.variable} dark h-full antialiased`}
+      className={`${jakartaSans.variable} ${barlowCondensed.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body
-        className={`${jakartaSans.className} min-h-full flex flex-col bg-slate-950 text-slate-100 selection:bg-sky-500/30 selection:text-sky-200`}
+        className={`${jakartaSans.className} min-h-full flex flex-col bg-slate-100 text-slate-900 selection:bg-pine-500/30 selection:text-pine-800`}
       >
         <TooltipProvider>{children}</TooltipProvider>
       </body>

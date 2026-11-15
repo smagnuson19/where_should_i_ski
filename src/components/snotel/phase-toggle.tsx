@@ -15,7 +15,7 @@ export function PhaseToggle({ phase, onPhaseChange }: PhaseToggleProps) {
     <div
       role="radiogroup"
       aria-label="ENSO phase shown on the map"
-      className="inline-flex w-full sm:w-auto rounded-xl border border-slate-800 bg-slate-950 p-1 gap-1"
+      className="inline-flex w-full sm:w-auto rounded-xl border border-slate-200 bg-slate-100 p-1 gap-1"
     >
       {ENSO_PHASES.map((p) => {
         const active = p === phase;
@@ -29,7 +29,7 @@ export function PhaseToggle({ phase, onPhaseChange }: PhaseToggleProps) {
             className={`flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
               active
                 ? `${PHASE_STYLE[p].active} shadow-xs`
-                : "border-transparent text-slate-400 hover:text-white hover:bg-slate-800/80"
+                : "border-transparent text-slate-600 hover:text-slate-950 hover:bg-slate-200/80"
             }`}
           >
             {PHASE_LABEL[p]}

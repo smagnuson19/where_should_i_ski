@@ -310,7 +310,7 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
   const dotR = 2.7 * Math.pow(k, 0.28);
 
   return (
-    <div className="relative w-full overflow-hidden rounded-lg bg-slate-950">
+    <div className="relative w-full overflow-hidden rounded-lg bg-alpine-haze/50">
       <svg
         ref={svgRef}
         viewBox={`${view.x} ${view.y} ${view.w} ${view.h}`}
@@ -319,7 +319,7 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
         aria-label={`US map of ${PHASE_LABEL[phase]} snowpack. Scroll or pinch to zoom, or click a state to compare its SNOTEL sites.`}
         onPointerDown={onPointerDown}
       >
-        <path d={NATION_OUTLINE_PATH} fill={OUTSIDE_NETWORK_COLOR} stroke="#334155" strokeWidth={1 * k} />
+        <path d={NATION_OUTLINE_PATH} fill={OUTSIDE_NETWORK_COLOR} stroke="#a59d86" strokeWidth={1 * k} />
         {STATE_SHAPES.map((s) => {
           const assignment = s.postal ? stateAssignments[s.postal] : undefined;
           if (!assignment) return <path key={s.fips} d={s.d} fill={OUTSIDE_NETWORK_COLOR} />;
@@ -335,9 +335,9 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
               d={s.d}
               fill={pctColor(pct)}
               fillOpacity={isSpot ? 0.48 : faded || dimmed ? 0.28 : 0.92}
-              stroke={isSpot || (hover?.kind === "state" && hover.postal === s.postal) ? "#ffffff" : "none"}
+              stroke={isSpot || (hover?.kind === "state" && hover.postal === s.postal) ? "#1c2a21" : "none"}
               strokeWidth={1.5 * k}
-              className="cursor-pointer outline-none focus-visible:stroke-white"
+              className="cursor-pointer outline-none focus-visible:stroke-slate-900"
               role="button"
               tabIndex={0}
               aria-label={label}
@@ -355,13 +355,13 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
             />
           );
         })}
-        <path d={STATE_BORDERS_PATH} fill="none" stroke="#020617" strokeOpacity={0.55} strokeWidth={0.75 * k} pointerEvents="none" />
+        <path d={STATE_BORDERS_PATH} fill="none" stroke="#fbf8f0" strokeOpacity={0.9} strokeWidth={0.75 * k} pointerEvents="none" />
         {outlines.map((o) => (
           <path
             key={o.regionId}
             d={o.d}
             fill="none"
-            stroke={selectedRegion === o.regionId ? "#ffffff" : "#0f172a"}
+            stroke={selectedRegion === o.regionId ? "#1c2a21" : "#434a3d"}
             strokeWidth={(selectedRegion === o.regionId ? 3 : 1.8) * k}
             pointerEvents="none"
           />
@@ -377,7 +377,7 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
                 props.activeResort?.id === r.id || (hover?.kind === "resort" && hover.resort.id === r.id);
               const dimmed = spotlight ? r.state !== spotlight.postal : selectedRegion !== "ALL" && r.region !== selectedRegion;
               const size = (active ? 5.2 : 3.8) * Math.pow(k, 0.28);
-              const fill = r.match === "none" ? "#64748b" : pctColor(pct);
+              const fill = r.match === "none" ? "#8b8774" : pctColor(pct);
               return (
                 <g
                   key={`resort-${r.id}`}
@@ -400,7 +400,7 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
                     transform={`rotate(45 ${x} ${y})`}
                     fill={fill}
                     fillOpacity={dimmed ? 0.28 : 1}
-                    stroke={active ? "#ffffff" : "#020617"}
+                    stroke="#1c2a21"
                     strokeWidth={(active ? 1.6 : 0.7) * k}
                   />
                 </g>
@@ -436,7 +436,7 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
                   r={r}
                   fill={pctColor(stationStats.get(st.triplet)?.phasePct[phase])}
                   fillOpacity={dimmed ? 0.28 : 1}
-                  stroke={active ? "#ffffff" : "#020617"}
+                  stroke="#1c2a21"
                   strokeWidth={(active ? 1.8 : 0.7) * k}
                   pointerEvents="none"
                 />
@@ -445,10 +445,10 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
                     x={x}
                     y={y - r - 3.2 * k}
                     textAnchor="middle"
-                    fill="#f8fafc"
+                    fill="#1c2a21"
                     fontSize={12.5 * k}
                     fontWeight={700}
-                    stroke="#020617"
+                    stroke="#fbf8f0"
                     strokeWidth={3 * k}
                     paintOrder="stroke"
                     pointerEvents="none"
@@ -477,18 +477,18 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
                   width={width}
                   height={38}
                   rx={8}
-                  fill="#020617"
-                  fillOpacity={0.86}
-                  stroke={isSelected ? "#38bdf8" : "#334155"}
+                  fill={isSelected ? "#1f5a3d" : "#1c2a21"}
+                  fillOpacity={0.92}
+                  stroke={isSelected ? "#84b799" : "#434a3d"}
                   strokeWidth={isSelected ? 1.5 : 1}
                 />
-                <text y={-5} textAnchor="middle" fill="#cbd5e1" fontSize={10.5} fontWeight={600}>
+                <text y={-5} textAnchor="middle" fill="#e6dcc7" fontSize={10.5} fontWeight={600}>
                   {name}
                 </text>
                 <text
                   y={12}
                   textAnchor="middle"
-                  fill="#ffffff"
+                  fill="#fbf8f0"
                   fontSize={14}
                   fontWeight={700}
                   style={{ fontVariantNumeric: "tabular-nums" }}
@@ -500,12 +500,12 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
           })}
       </svg>
 
-      <div className="absolute top-3 left-3 z-10 flex flex-col overflow-hidden rounded-lg border border-slate-700 bg-slate-950/92 shadow-lg">
+      <div className="absolute top-3 left-3 z-10 flex flex-col overflow-hidden rounded-lg border border-slate-300 bg-slate-100/92 shadow-lg">
         <button
           type="button"
           aria-label="Zoom in"
           onClick={() => zoomBy(1 / 1.6)}
-          className="p-1.5 text-slate-100 hover:bg-slate-800 border-b border-slate-800"
+          className="p-1.5 text-slate-900 hover:bg-slate-200 border-b border-slate-200"
         >
           <Plus className="w-3.5 h-3.5" />
         </button>
@@ -514,7 +514,7 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
           aria-label="Zoom out"
           disabled={atFullMap}
           onClick={() => zoomBy(1.6)}
-          className="p-1.5 text-slate-100 hover:bg-slate-800 border-b border-slate-800 disabled:opacity-40"
+          className="p-1.5 text-slate-900 hover:bg-slate-200 border-b border-slate-200 disabled:opacity-40"
         >
           <Minus className="w-3.5 h-3.5" />
         </button>
@@ -523,28 +523,28 @@ export function UsEnsoMap(props: UsEnsoMapProps) {
           aria-label="Show the full United States"
           disabled={atFullMap && !focusedPostal}
           onClick={() => applyViewRef.current(FULL_MAP_VIEW, true)}
-          className="p-1.5 text-slate-100 hover:bg-slate-800 disabled:opacity-40"
+          className="p-1.5 text-slate-900 hover:bg-slate-200 disabled:opacity-40"
         >
           <Earth className="w-3.5 h-3.5" />
         </button>
       </div>
 
       {atFullMap && !spotlight && (
-        <p className="absolute bottom-3 left-3 z-10 rounded-md bg-slate-950/80 px-2 py-1 text-[11px] text-slate-300 pointer-events-none">
+        <p className="absolute bottom-3 left-3 z-10 rounded-md bg-slate-100/80 px-2 py-1 text-[11px] text-slate-700 pointer-events-none">
           Scroll, pinch, or choose a state to compare SNOTEL sites
         </p>
       )}
 
       {spotlight && spread && (
-        <div className="mt-2 rounded-lg border border-slate-700/90 bg-slate-950/80 px-3 py-2.5 text-xs text-slate-200">
-          <div className="font-semibold text-white text-sm">{spotlight.name}</div>
+        <div className="mt-2 rounded-lg border border-slate-300/90 bg-slate-100/80 px-3 py-2.5 text-xs text-slate-800">
+          <div className="font-semibold text-slate-950 text-sm">{spotlight.name}</div>
           <p className="mt-1 leading-relaxed">
             {spread.count} SNOTEL {spread.count === 1 ? "site" : "sites"}
             {spread.min && spread.max ? (
               <>
                 . Sites with at least {LOW_CONFIDENCE_WINTERS} {PHASE_LABEL[phase]} winters run from{" "}
-                <strong className="text-white">{formatPct(spread.min.pct)}</strong> to{" "}
-                <strong className="text-white">{formatPct(spread.max.pct)}</strong> of a typical winter.
+                <strong className="text-slate-950">{formatPct(spread.min.pct)}</strong> to{" "}
+                <strong className="text-slate-950">{formatPct(spread.max.pct)}</strong> of a typical winter.
                 {spread.max.pct - spread.min.pct >= 12
                   ? ` Lowest is ${spread.min.station.name}; highest is ${spread.max.station.name}.`
                   : " Sites across the state are close to each other."}

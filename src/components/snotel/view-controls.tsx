@@ -25,16 +25,16 @@ export function ViewControls(props: ViewControlsProps) {
   const bandItems = Object.fromEntries(props.elevationBands.map((b) => [b.id, b.label]));
 
   return (
-    <section className="rounded-2xl border border-slate-800/90 bg-slate-900/60 p-4 sm:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:divide-x lg:divide-slate-800/80">
+    <section className="rounded-2xl border border-slate-200/90 bg-slate-50/60 p-4 sm:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:divide-x lg:divide-slate-200/80">
       <div className="lg:col-span-3 space-y-2">
-        <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-600">
           Show <Term k="enso">ENSO</Term> Phase
         </div>
         <PhaseToggle phase={props.phase} onPhaseChange={props.onPhaseChange} />
       </div>
 
       <div className="lg:col-span-6 lg:pl-5 space-y-2">
-        <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-600">
           Winters Included (<Term k="waterYear">Water Years</Term>)
         </div>
         <YearRangeFilter
@@ -47,7 +47,7 @@ export function ViewControls(props: ViewControlsProps) {
       </div>
 
       <div className="lg:col-span-3 lg:pl-5 space-y-2">
-        <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-600">
           <Term k="elevBand">Elevation Band</Term>
         </div>
         <Select
@@ -55,7 +55,7 @@ export function ViewControls(props: ViewControlsProps) {
           value={props.elevBand}
           onValueChange={(v) => v && props.onElevBandChange(String(v))}
         >
-          <SelectTrigger className="w-full bg-slate-950 border-slate-800 text-xs h-9 rounded-lg">
+          <SelectTrigger className="w-full bg-slate-100 border-slate-200 text-xs h-9 rounded-lg">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -66,7 +66,7 @@ export function ViewControls(props: ViewControlsProps) {
             ))}
           </SelectContent>
         </Select>
-        <p className="text-[11px] text-slate-400 leading-snug">
+        <p className="text-[11px] text-slate-600 leading-snug">
           Higher stations stay colder and generally hold deeper snowpack.
         </p>
       </div>
